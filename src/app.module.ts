@@ -13,7 +13,9 @@ import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { UserModule } from './user/user.module';
-import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { LoggerMiddleware } from './libs/middlewares/logger.middleware';
+
+import 'reflect-metadata';
 
 @Module({
   imports: [

@@ -20,9 +20,13 @@ export class LoggerMiddleware implements NestMiddleware {
       const contentLength = response.get('content-length');
       const diff = process.hrtime(startAt);
       const responseTime = diff[0] * 1e3 + diff[1] * 1e-6;
-      this.logger.log(
-        `${method} ${originalUrl} ${statusCode} ${responseTime}ms ${contentLength} - ${userAgent} ${ip}`,
-      );
+      const logString = `${method} ${originalUrl} ${statusCode} ${responseTime}ms ${contentLength} - ${userAgent} ${ip}`;
+
+      if (statusCode >= 400) {
+        this.logger.error(logString);
+      } else {
+        this.logger.log(logString);
+      }
     });
 
     next();

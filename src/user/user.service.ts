@@ -50,7 +50,7 @@ export class UserService {
 
   async findByPayload(payload: PayloadEntity) {
     const { id } = payload;
-    const user = await this.userModel.findOne({ id });
+    const user = await this.userModel.findById(id);
     return this.sanitizeUser(user);
   }
 
