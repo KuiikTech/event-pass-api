@@ -16,7 +16,7 @@ export class User extends Document {
     type: String,
     required: true,
   })
-  lasttName: string;
+  lastName: string;
 
   @Prop({
     type: Number,

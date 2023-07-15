@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { sign } from 'jsonwebtoken';
 
-import { PayloadEntity } from 'src/auth/entities/payload.entity';
-import { UserService } from 'src/user/user.service';
-import { User } from 'src/user/schemas/user.schema';
-import { RegisterUserDto } from 'src/user/dto/register-user.dto';
+import { PayloadEntity } from 'src/modules/auth/entities/payload.entity';
+import { UserService } from 'src/modules/user/user.service';
+import { User } from 'src/modules/user/schemas/user.schema';
+import { RegisterUserDto } from 'src/modules/user/dto/register-user.dto';
 
 import { LoginDto } from './dto/login.dto';
 

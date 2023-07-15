@@ -13,6 +13,8 @@ import {
 import { UserStatusType } from '../types/user-status.type';
 import { ApiProperty } from '@nestjs/swagger';
 
+import { RolesType } from 'src/modules/auth/types/roles.types';
+
 export class RegisterUserDto {
   @ApiProperty({
     example: 'Kuiik',
@@ -30,7 +32,7 @@ export class RegisterUserDto {
   @IsString()
   @MaxLength(100)
   @MinLength(1)
-  lasttName: string;
+  lastName: string;
 
   @ApiProperty({
     example: '+51 (123) 456 7899',
@@ -60,20 +62,20 @@ export class RegisterUserDto {
   password: string;
 
   @ApiProperty({
-    example: '["editor","viewer"]',
+    example: Object.values(RolesType),
     description: 'roles list of the user',
-    required: false,
+    default: RolesType.GUEST,
   })
   @IsOptional()
   @IsArray()
-  roles: string[];
+  roles?: string[];
 
   @ApiProperty({
-    example: 'active',
+    example: Object.values(UserStatusType),
     description: 'status of the user',
-    required: false,
+    default: UserStatusType.ACTIVE,
   })
   @IsOptional()
   @IsIn(Object.values(UserStatusType))
-  status: UserStatusType;
+  status?: UserStatusType;
 }
