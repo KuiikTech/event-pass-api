@@ -17,9 +17,8 @@ export class ResponseGuestDto extends EntityBaseResponse {
   @ApiProperty({
     example: '+51 (123) 456 7899',
     description: 'phone number of the guest',
-    required: false,
   })
-  phone: number;
+  phone?: number;
 
   @ApiProperty({
     example: 'kuiik@email.com',
@@ -30,7 +29,6 @@ export class ResponseGuestDto extends EntityBaseResponse {
   @ApiProperty({
     example: '1234567890',
     description: 'document number (nit) of the user',
-    required: false,
   })
-  documentNumber: string;
+  documentNumber?: string;
 }

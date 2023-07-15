@@ -5,6 +5,9 @@ export class IdResponse {
     this.id = id;
   }
 
-  @ApiProperty({ example: '6d5049ccba1454e4ac7ec231' })
+  @ApiProperty({
+    example: '6d5049ccba1454e4ac7ec231',
+    description: 'created user id',
+  })
   readonly id: string;
 }

@@ -13,7 +13,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AuthService } from './modules/auth/auth.service';
 import { JwtStrategy } from './modules/auth/strategies/jwt.strategy';
 import { UserModule } from './modules/user/user.module';
-import { LoggerMiddleware } from './libs/middlewares/logger.middleware';
+import { LoggerMiddleware } from './libs/application/middlewares/logger.middleware';
 import { GuestModule } from './modules/guest/guest.module';
 
 import 'reflect-metadata';

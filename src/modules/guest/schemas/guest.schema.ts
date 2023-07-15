@@ -16,9 +16,10 @@ export class Guest extends Document {
   lastName: string;
 
   @Prop({
-    type: Number,
+    type: String,
+    match: /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/,
   })
-  phone: number;
+  phone: string;
 
   @Prop({
     type: String,

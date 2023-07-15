@@ -3,8 +3,7 @@ import { sign } from 'jsonwebtoken';
 
 import { PayloadEntity } from 'src/modules/auth/entities/payload.entity';
 import { UserService } from 'src/modules/user/user.service';
-import { User } from 'src/modules/user/schemas/user.schema';
-import { RegisterUserDto } from 'src/modules/user/dto/register-user.dto';
+import { UserModel } from 'src/modules/user/schemas/user.schema';
 
 import { LoginDto } from './dto/login.dto';
 
@@ -13,20 +12,10 @@ export class AuthService {
   constructor(private userService: UserService) {}
 
   async login(loginDto: LoginDto) {
-    const user: User = await this.userService.findByLogin(loginDto);
+    const user: UserModel = await this.userService.findByLogin(loginDto);
     const payload = {
       id: user._id,
     };
-    const token = await this.signPayload(payload);
-    return { user, token };
-  }
-
-  async register(registerUserDto: RegisterUserDto) {
-    const user: User = await this.userService.create(registerUserDto);
-    const payload = {
-      id: user._id,
-    };
-
     const token = await this.signPayload(payload);
     return { user, token };
   }

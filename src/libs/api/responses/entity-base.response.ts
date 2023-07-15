@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IdResponse } from './id.response';
 
-export interface EntityBaseResponseProps {
-  id: string;
+export class EntityBaseResponseProps {
+  _id: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export class EntityBaseResponse extends IdResponse {
   constructor(props: EntityBaseResponseProps) {
-    super(props.id);
+    super(props._id);
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
   }

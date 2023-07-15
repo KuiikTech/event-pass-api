@@ -3,9 +3,10 @@ import * as bcrypt from 'bcrypt';
 import { Document } from 'mongoose';
 
 import { UserStatusType } from '../types/user-status.type';
+import { IsOptional } from 'class-validator';
 
 @Schema()
-export class User extends Document {
+export class UserModel extends Document {
   @Prop({
     type: String,
     required: true,
@@ -19,9 +20,10 @@ export class User extends Document {
   lastName: string;
 
   @Prop({
-    type: Number,
+    type: String,
+    match: /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/,
   })
-  phone: number;
+  phone: string;
 
   @Prop({
     type: String,
@@ -50,10 +52,11 @@ export class User extends Document {
     required: true,
     enum: UserStatusType,
   })
+  @IsOptional()
   status: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(UserModel);
 
 UserSchema.pre('save', async function (next) {
   try {
