@@ -16,9 +16,7 @@ import { CreateGuestDto } from './dto/create-guest.dto';
 import { ResponseGuestDto } from './dto/response-guest.dto';
 
 @ApiTags(`/${routesV1.guest.root}`)
-@Controller({
-  version: routesV1.version,
-})
+@Controller({ version: routesV1.version })
 export class GuestController {
   constructor(private guestService: GuestService) {}
 

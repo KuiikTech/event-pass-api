@@ -15,7 +15,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { RolesType } from 'src/modules/auth/types/roles.types';
 
-export class RegisterUserDto {
+export class CreateUserDto {
   @ApiProperty({
     example: 'Kuiik',
     description: 'first name of the user',
@@ -39,9 +39,8 @@ export class RegisterUserDto {
     description: 'phone number of the user',
     required: false,
   })
-  @IsOptional()
   @Matches(/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/)
-  phone: number;
+  phone?: number;
 
   @ApiProperty({
     example: 'kuiik@email.com',
@@ -64,14 +63,13 @@ export class RegisterUserDto {
   @ApiProperty({
     example: Object.values(RolesType),
     description: 'roles list of the user',
-    default: RolesType.GUEST,
+    default: [RolesType.GUEST],
   })
-  @IsOptional()
   @IsArray()
   roles?: string[];
 
   @ApiProperty({
-    example: Object.values(UserStatusType),
+    example: Object.values(UserStatusType).join('||'),
     description: 'status of the user',
     default: UserStatusType.ACTIVE,
   })
