@@ -8,7 +8,7 @@ import {
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
 
-import { RegisterUserDto } from 'src/user/dto/register-user.dto';
+import { RegisterUserDto } from 'src/modules/user/dto/register-user.dto';
 import { routesV1 } from 'src/app.routes';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';

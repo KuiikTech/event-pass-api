@@ -9,11 +9,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { AuthService } from './auth/auth.service';
-import { JwtStrategy } from './auth/strategies/jwt.strategy';
-import { UserModule } from './user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { AuthService } from './modules/auth/auth.service';
+import { JwtStrategy } from './modules/auth/strategies/jwt.strategy';
+import { UserModule } from './modules/user/user.module';
 import { LoggerMiddleware } from './libs/middlewares/logger.middleware';
+import { GuestModule } from './modules/guest/guest.module';
 
 import 'reflect-metadata';
 
@@ -23,6 +24,7 @@ import 'reflect-metadata';
     MongooseModule.forRoot(process.env.MONGO_URI),
     UserModule,
     AuthModule,
+    GuestModule,
   ],
   controllers: [AppController],
   providers: [AppService, AuthService, JwtStrategy],

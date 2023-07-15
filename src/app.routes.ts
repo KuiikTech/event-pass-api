@@ -1,6 +1,7 @@
 // Root
 const homeRoot = '';
 const authRoot = 'auth';
+const guestRoot = 'guest';
 
 // Api versions
 const v1 = 'v1';
@@ -15,5 +16,9 @@ export const routesV1 = {
     root: authRoot,
     register: `${authRoot}/register`,
     login: `${authRoot}/login`,
+  },
+  guest: {
+    root: guestRoot,
+    create: `${guestRoot}/`,
   },
 };

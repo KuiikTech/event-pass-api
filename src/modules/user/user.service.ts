@@ -3,9 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
-import { LoginDto } from 'src/auth/dto/login.dto';
-import { PayloadEntity } from 'src/auth/entities/payload.entity';
-import { RolesType } from 'src/auth/types/roles.types';
+import { LoginDto } from 'src/modules/auth/dto/login.dto';
+import { PayloadEntity } from 'src/modules/auth/entities/payload.entity';
+import { RolesType } from 'src/modules/auth/types/roles.types';
 
 import { User } from './schemas/user.schema';
 import { RegisterUserDto } from './dto/register-user.dto';
