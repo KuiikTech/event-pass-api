@@ -61,16 +61,18 @@ export class CreateUserDto {
   password: string;
 
   @ApiProperty({
-    example: Object.values(RolesType),
-    description: 'roles list of the user',
+    example: `['${RolesType.EDITOR}','${RolesType.SUPERVISOR}']`,
+    description: `roles list of the user: ${Object.values(RolesType)}`,
     default: [RolesType.GUEST],
   })
   @IsArray()
   roles?: string[];
 
   @ApiProperty({
-    example: Object.values(UserStatusType).join('||'),
-    description: 'status of the user',
+    example: UserStatusType.ACTIVE,
+    description: `status of the user: ${Object.values(UserStatusType).join(
+      '||',
+    )}`,
     default: UserStatusType.ACTIVE,
   })
   @IsOptional()

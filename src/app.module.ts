@@ -6,6 +6,9 @@ import {
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import * as mongoosePaginate from 'mongoose-paginate-v2';
+import * as mongooseUniqueValidator from 'mongoose-unique-validator';
+import * as mongooseValidationErrorTransform from 'mongoose-validation-error-transform';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -21,7 +24,17 @@ import 'reflect-metadata';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(process.env.MONGO_URI, {
+      ignoreUndefined: true,
+      connectionFactory: (connection) => {
+        connection.plugin(mongoosePaginate);
+        connection.plugin(mongooseUniqueValidator);
+        connection.plugin(mongooseValidationErrorTransform, {
+          humanize: false,
+        });
+        return connection;
+      },
+    }),
     UserModule,
     AuthModule,
     GuestModule,
