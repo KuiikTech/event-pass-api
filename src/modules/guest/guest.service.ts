@@ -1,13 +1,31 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { PaginateModel } from 'mongoose';
+
+import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
+import { Paginated } from 'src/libs/ports/repository.port';
 
 import { CreateGuestDto } from './dto/create-guest.dto';
-import { Guest } from './schemas/guest.schema';
+import { GuestModel } from './schemas/guest.schema';
+
+export class FindGuestQuery extends PaginatedQueryBase {
+  readonly firstName?: string;
+  readonly lastname?: string;
+  readonly documentNumber?: string;
+
+  constructor(props: PaginatedParams<FindGuestQuery>) {
+    super(props);
+    this.firstName = props.firstName;
+    this.lastname = props.lastname;
+    this.documentNumber = props.documentNumber;
+  }
+}
 
 @Injectable()
 export class GuestService {
-  constructor(@InjectModel('Guest') private guestModel: Model<Guest>) {}
+  constructor(
+    @InjectModel('Guest') private guestModel: PaginateModel<GuestModel>,
+  ) {}
 
   async create(createGuestDto: CreateGuestDto) {
     const { email } = createGuestDto;
@@ -17,5 +35,35 @@ export class GuestService {
     }
     const createdGuest = new this.guestModel(createGuestDto);
     await createdGuest.save();
+  }
+
+  async find(findGuestQuery: FindGuestQuery) {
+    const filters = {
+      firstName: findGuestQuery.firstName,
+      lastName: findGuestQuery.lastname,
+      documentNumber: findGuestQuery.documentNumber,
+    };
+    const result = await this.guestModel.paginate(
+      { ...filters },
+      {
+        limit: findGuestQuery.limit,
+        offset: findGuestQuery.offset,
+        page: findGuestQuery.page,
+        sort: findGuestQuery.orderBy,
+      },
+    );
+
+    return new Paginated({
+      data: result.docs.map((guest) => this.sanitize(guest)),
+      count: result.totalDocs,
+      limit: result.limit,
+      page: result.page,
+    });
+  }
+
+  private sanitize(user: GuestModel) {
+    const sanitized = user.toObject();
+    delete sanitized['password'];
+    return sanitized;
   }
 }

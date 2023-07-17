@@ -32,6 +32,7 @@ export class CreateGuestDto {
     description: 'phone number of the guest',
     required: false,
   })
+  @IsOptional()
   @Matches(/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/)
   phone?: number;
 
