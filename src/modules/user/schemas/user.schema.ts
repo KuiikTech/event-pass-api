@@ -34,7 +34,6 @@ export class UserModel extends Document {
 
   @Prop({
     type: String,
-    required: true,
   })
   password: string;
 
