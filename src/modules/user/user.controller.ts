@@ -1,4 +1,13 @@
-import { Controller, UseGuards, Post, Body, Query, Get } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Post,
+  Body,
+  Query,
+  Get,
+  Patch,
+  Param,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBadRequestResponse,
@@ -12,10 +21,12 @@ import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
 import { ErrorResponse } from 'src/libs/api/responses/error.response';
 import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
 
-import { FindUserQuery, UserService } from './user.service';
+import { FindUserQuery, PartialUpdateUser, UserService } from './user.service';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { RequestUserDto } from './dto/request-user.dto';
 import { PaginatedResponseUserDto } from './dto/paginated-response-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { ParseMongoIdPipe } from 'src/libs/application/pipes/parse-mongo-id.pipe';
 
 @ApiTags(`/${routesV1.user.create}`)
 @ApiBearerAuth()
@@ -53,5 +64,20 @@ export class UserController {
     return new PaginatedResponseUserDto({
       ...paginated,
     });
+  }
+
+  @ApiOperation({ summary: 'Update user' })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Patch(routesV1.user.update)
+  async update(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<ResponseUserDto> {
+    const partialUpdateUser = new PartialUpdateUser({
+      ...updateUserDto,
+    });
+
+    return this.userService.update(id, partialUpdateUser);
   }
 }

@@ -21,6 +21,7 @@ export const routesV1 = {
   user: {
     root: userRoot,
     create: userRoot,
+    update: `${userRoot}/:id`,
   },
   guest: {
     root: guestRoot,

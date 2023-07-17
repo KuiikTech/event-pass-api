@@ -6,9 +6,14 @@ import {
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import {
+  CorrelationIdMiddleware,
+  CorrelationModule,
+} from '@evanion/nestjs-correlation-id';
 import * as mongoosePaginate from 'mongoose-paginate-v2';
 import * as mongooseUniqueValidator from 'mongoose-unique-validator';
 import * as mongooseValidationErrorTransform from 'mongoose-validation-error-transform';
+import { v4 as uuidV4 } from 'uuid';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -24,6 +29,10 @@ import 'reflect-metadata';
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    CorrelationModule.forRoot({
+      header: 'X-Request-ID',
+      generator: () => uuidV4(),
+    }),
     MongooseModule.forRoot(process.env.MONGO_URI, {
       ignoreUndefined: true,
       connectionFactory: (connection) => {
@@ -44,6 +53,9 @@ import 'reflect-metadata';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(CorrelationIdMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
     consumer
       .apply(LoggerMiddleware)
       .forRoutes({ path: '*', method: RequestMethod.ALL });

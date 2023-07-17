@@ -15,24 +15,26 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { RolesType } from 'src/modules/auth/types/roles.types';
 
-export class CreateUserDto {
+export class UpdateUserDto {
   @ApiProperty({
     example: 'Kuiik',
     description: 'first name of the user',
   })
+  @IsOptional()
   @IsString()
   @MaxLength(100)
   @MinLength(1)
-  firstName: string;
+  firstName?: string;
 
   @ApiProperty({
     example: 'Tec',
     description: 'last name of the user',
   })
+  @IsOptional()
   @IsString()
   @MaxLength(100)
   @MinLength(1)
-  lastName: string;
+  lastName?: string;
 
   @ApiProperty({
     example: '+51 (123) 456 7899',
@@ -47,10 +49,11 @@ export class CreateUserDto {
     example: 'kuiik@email.com',
     description: 'email of the user',
   })
+  @IsOptional()
   @IsEmail()
   @MaxLength(300)
   @MinLength(5)
-  email: string;
+  email?: string;
 
   @ApiProperty({
     example: 'dummy123*',
