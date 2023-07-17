@@ -853,6 +853,13 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.44.0.tgz"
   integrity sha512-Ag+9YM4ocKQx9AarydN0KY2j0ErMHNIocPDrVo8zAE44xLTjEtz81OdR68/cydGtk6m6jDb5Za3r2useMzYmSw==
 
+"@evanion/nestjs-correlation-id@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@evanion/nestjs-correlation-id/-/nestjs-correlation-id-1.0.4.tgz#a24f913b7921ed2b52cf37477237f71e45070cb8"
+  integrity sha512-NhcVzpLUztuPEqaYtFJ3RoCB7/mmPJm2jDJ8R3234F0Pdq7pQIbUhYQgtmJxrdaCUvMTO091Z3Z4b+dUwvifGg==
+  dependencies:
+    uuid "^9.0.0"
+
 "@humanwhocodes/config-array@^0.11.10":
   version "0.11.10"
   resolved "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.11.10.tgz"
@@ -5983,7 +5990,7 @@ utils-merge@1.0.1, utils-merge@^1.0.1:
   resolved "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz"
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
 
-uuid@9.0.0:
+uuid@9.0.0, uuid@^9.0.0:
   version "9.0.0"
   resolved "https://registry.npmjs.org/uuid/-/uuid-9.0.0.tgz"
   integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==

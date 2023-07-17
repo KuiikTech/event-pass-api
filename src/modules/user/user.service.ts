@@ -26,6 +26,32 @@ export class FindUserQuery extends PaginatedQueryBase {
   }
 }
 
+export class PartialUpdateUser {
+  readonly firstName?: string;
+
+  readonly lastName?: string;
+
+  readonly phone?: string;
+
+  readonly email?: string;
+
+  readonly password?: string;
+
+  readonly roles?: string[];
+
+  readonly status?: UserStatusType;
+
+  constructor(props: PartialUpdateUser) {
+    this.firstName = props.firstName;
+    this.lastName = props.lastName;
+    this.phone = props.phone;
+    this.email = props.email;
+    this.password = props.password;
+    this.roles = props.roles;
+    this.status = props.status;
+  }
+}
+
 @Injectable()
 export class UserService {
   constructor(
@@ -95,6 +121,24 @@ export class UserService {
       limit: result.limit,
       page: result.page,
     });
+  }
+
+  async update(id: string, partialUpdateUser: PartialUpdateUser) {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new HttpException('user doesnt exists', HttpStatus.NOT_FOUND);
+    }
+
+    user.firstName = partialUpdateUser.firstName ?? user.firstName;
+    user.lastName = partialUpdateUser.lastName ?? user.lastName;
+    user.phone = partialUpdateUser.phone ?? user.phone;
+    user.email = partialUpdateUser.email ?? user.email;
+    user.password = partialUpdateUser.password ?? user.password;
+    user.roles = partialUpdateUser.roles ?? user.roles;
+    user.status = partialUpdateUser.status ?? user.status;
+
+    await user.save();
+    return this.sanitizeUser(user);
   }
 
   private sanitizeUser(user: UserModel) {
