@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Post, Body } from '@nestjs/common';
+import { Controller, UseGuards, Post, Body, Query, Get } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBadRequestResponse,
@@ -10,9 +10,12 @@ import {
 import { routesV1 } from 'src/app.routes';
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
 import { ErrorResponse } from 'src/libs/api/responses/error.response';
+import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
 
-import { UserService } from './user.service';
+import { FindUserQuery, UserService } from './user.service';
 import { ResponseUserDto } from './dto/response-user.dto';
+import { RequestUserDto } from './dto/request-user.dto';
+import { PaginatedResponseUserDto } from './dto/paginated-response-user.dto';
 
 @ApiTags(`/${routesV1.user.create}`)
 @ApiBearerAuth()
@@ -24,7 +27,31 @@ export class UserController {
   @ApiBadRequestResponse({ type: ErrorResponse })
   @UseGuards(AuthGuard('jwt'))
   @Post(routesV1.user.create)
-  async create(@Body() createUserDto: CreateUserDto): Promise<ResponseUserDto> {
+  async register(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<ResponseUserDto> {
     return this.userService.create(createUserDto);
+  }
+
+  @ApiOperation({ summary: 'List users' })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Get(routesV1.user.root)
+  async list(
+    @Body() requestUserDto: RequestUserDto,
+    @Query() paginatedQueryDto: PaginatedQueryDto,
+  ): Promise<PaginatedResponseUserDto> {
+    const query = new FindUserQuery({
+      ...requestUserDto,
+      limit: paginatedQueryDto?.limit,
+      page: paginatedQueryDto?.page,
+      orderBy: paginatedQueryDto?.orderBy,
+    });
+
+    const paginated = await this.userService.find(query);
+
+    return new PaginatedResponseUserDto({
+      ...paginated,
+    });
   }
 }

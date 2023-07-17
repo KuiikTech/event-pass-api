@@ -34,8 +34,10 @@ export class ResponseUserDto extends EntityBaseResponse {
   roles?: string[];
 
   @ApiProperty({
-    example: 'active',
-    description: 'status of the user',
+    example: UserStatusType.ACTIVE,
+    description: `status of the user: ${Object.values(UserStatusType).join(
+      '||',
+    )}`,
   })
   status?: UserStatusType;
 }
