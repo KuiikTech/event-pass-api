@@ -39,6 +39,7 @@ export class CreateUserDto {
     description: 'phone number of the user',
     required: false,
   })
+  @IsOptional()
   @Matches(/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/)
   phone?: number;
 
@@ -55,6 +56,7 @@ export class CreateUserDto {
     example: 'dummy123*',
     description: 'password of the user',
   })
+  @IsOptional()
   @IsString()
   @Length(8, 100)
   @NotContains(' ')
@@ -65,6 +67,7 @@ export class CreateUserDto {
     description: `roles list of the user: ${Object.values(RolesType)}`,
     default: [RolesType.GUEST],
   })
+  @IsOptional()
   @IsArray()
   roles?: string[];
 
