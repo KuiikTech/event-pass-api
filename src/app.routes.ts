@@ -3,6 +3,7 @@ const homeRoot = '';
 const authRoot = 'auth';
 const userRoot = 'user';
 const guestRoot = 'guest';
+const eventRoot = 'event';
 
 // Api versions
 const v1 = 'v1';
@@ -27,5 +28,8 @@ export const routesV1 = {
     root: guestRoot,
     create: guestRoot,
     update: `${guestRoot}/:id`,
+  },
+  event: {
+    root: eventRoot,
   },
 };
