@@ -77,7 +77,7 @@ export class UserService {
     const createdUser = new this.userModel(createUserDto);
     await createdUser.save();
 
-    return this.sanitizeUser(createdUser);
+    return this.sanitize(createdUser);
   }
 
   async findByLogin(loginDto: LoginDto) {
@@ -87,7 +87,7 @@ export class UserService {
       throw new HttpException('user doesnt exists', HttpStatus.BAD_REQUEST);
     }
     if (await bcrypt.compare(password, user.password)) {
-      return this.sanitizeUser(user);
+      return this.sanitize(user);
     } else {
       throw new HttpException('invalid credential', HttpStatus.BAD_REQUEST);
     }
@@ -96,7 +96,7 @@ export class UserService {
   async findByPayload(payload: PayloadEntity) {
     const { id } = payload;
     const user = await this.userModel.findById(id);
-    return this.sanitizeUser(user);
+    return this.sanitize(user);
   }
 
   async find(findUserQuery: FindUserQuery) {
@@ -116,7 +116,7 @@ export class UserService {
     );
 
     return new Paginated({
-      data: result.docs.map((user) => this.sanitizeUser(user)),
+      data: result.docs.map((user) => this.sanitize(user)),
       count: result.totalDocs,
       limit: result.limit,
       page: result.page,
@@ -138,10 +138,10 @@ export class UserService {
     user.status = partialUpdateUser.status ?? user.status;
 
     await user.save();
-    return this.sanitizeUser(user);
+    return this.sanitize(user);
   }
 
-  private sanitizeUser(user: UserModel) {
+  private sanitize(user: UserModel) {
     const sanitized = user.toObject();
     delete sanitized['password'];
     return sanitized;
