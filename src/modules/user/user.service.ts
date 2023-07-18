@@ -137,8 +137,10 @@ export class UserService {
     user.roles = partialUpdateUser.roles ?? user.roles;
     user.status = partialUpdateUser.status ?? user.status;
 
-    await user.save();
-    return this.sanitize(user);
+    const updatedUser = await this.userModel.findByIdAndUpdate(id, user, {
+      new: true,
+    });
+    return this.sanitize(updatedUser);
   }
 
   private sanitize(user: UserModel) {
