@@ -23,6 +23,7 @@ import { JwtStrategy } from './modules/auth/strategies/jwt.strategy';
 import { UserModule } from './modules/user/user.module';
 import { LoggerMiddleware } from './libs/application/middlewares/logger.middleware';
 import { GuestModule } from './modules/guest/guest.module';
+import { EventModule } from './modules/event/event.module';
 
 import 'reflect-metadata';
 
@@ -47,9 +48,10 @@ import 'reflect-metadata';
     UserModule,
     AuthModule,
     GuestModule,
+    EventModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AuthService, JwtStrategy],
+  providers: [AppService, JwtStrategy, AuthService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
