@@ -70,3 +70,12 @@ UserSchema.pre('save', async function (next) {
     return next(err);
   }
 });
+
+UserSchema.pre('find', function (next) {
+  const statusFilter = this.getQuery().status;
+  console.log(this.getFilter());
+  if (!statusFilter) {
+    this.where({ status: { $ne: UserStatusType.DELETED } });
+  }
+  return next();
+});
