@@ -94,8 +94,10 @@ export class GuestService {
     guest.documentNumber =
       partialUpdateGuest.documentNumber ?? guest.documentNumber;
 
-    await guest.save();
-    return this.sanitize(guest);
+    const updatedGuest = await this.guestModel.findByIdAndUpdate(id, guest, {
+      new: true,
+    });
+    return this.sanitize(updatedGuest);
   }
 
   private sanitize(guest: GuestModel) {

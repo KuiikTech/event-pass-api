@@ -5,7 +5,9 @@ import { Document } from 'mongoose';
 import { UserStatusType } from '../types/user-status.type';
 import { IsOptional } from 'class-validator';
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
 export class UserModel extends Document {
   @Prop({
     type: String,
@@ -73,7 +75,6 @@ UserSchema.pre('save', async function (next) {
 
 UserSchema.pre('find', function (next) {
   const statusFilter = this.getQuery().status;
-  console.log(this.getFilter());
   if (!statusFilter) {
     this.where({ status: { $ne: UserStatusType.DELETED } });
   }
