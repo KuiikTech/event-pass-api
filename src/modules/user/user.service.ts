@@ -103,7 +103,7 @@ export class UserService {
     const filters = {
       firstName: findUserQuery.firstName,
       lastName: findUserQuery.lastname,
-      name: findUserQuery.status,
+      status: findUserQuery.status,
     };
     const result = await this.userModel.paginate(
       { ...filters },
