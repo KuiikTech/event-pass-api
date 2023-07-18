@@ -21,6 +21,26 @@ export class FindGuestQuery extends PaginatedQueryBase {
   }
 }
 
+export class PartialUpdateGuest {
+  readonly firstName?: string;
+
+  readonly lastName?: string;
+
+  readonly phone?: string;
+
+  readonly email?: string;
+
+  readonly documentNumber?: string;
+
+  constructor(props: PartialUpdateGuest) {
+    this.firstName = props.firstName;
+    this.lastName = props.lastName;
+    this.phone = props.phone;
+    this.email = props.email;
+    this.documentNumber = props.documentNumber;
+  }
+}
+
 @Injectable()
 export class GuestService {
   constructor(
@@ -61,8 +81,25 @@ export class GuestService {
     });
   }
 
-  private sanitize(user: GuestModel) {
-    const sanitized = user.toObject();
+  async update(id: string, partialUpdateGuest: PartialUpdateGuest) {
+    const guest = await this.guestModel.findById(id);
+    if (!guest) {
+      throw new HttpException('guest doesnt exists', HttpStatus.NOT_FOUND);
+    }
+
+    guest.firstName = partialUpdateGuest.firstName ?? guest.firstName;
+    guest.lastName = partialUpdateGuest.lastName ?? guest.lastName;
+    guest.phone = partialUpdateGuest.phone ?? guest.phone;
+    guest.email = partialUpdateGuest.email ?? guest.email;
+    guest.documentNumber =
+      partialUpdateGuest.documentNumber ?? guest.documentNumber;
+
+    await guest.save();
+    return this.sanitize(guest);
+  }
+
+  private sanitize(guest: GuestModel) {
+    const sanitized = guest.toObject();
     delete sanitized['password'];
     return sanitized;
   }

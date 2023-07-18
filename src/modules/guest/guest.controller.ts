@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -10,6 +19,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { ErrorResponse } from 'src/libs/api/responses/error.response';
 import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
+import { ParseMongoIdPipe } from 'src/libs/application/pipes/parse-mongo-id.pipe';
 import { routesV1 } from 'src/app.routes';
 
 import { FindGuestQuery, GuestService } from './guest.service';
@@ -17,6 +27,8 @@ import { CreateGuestDto } from './dto/create-guest.dto';
 import { ResponseGuestDto } from './dto/response-guest.dto';
 import { RequestGuestDto } from './dto/request-guest.dto';
 import { PaginatedResponseGuestDto } from './dto/paginated-response-guest.dto';
+import { UpdateGuestDto } from './dto/update-guest.dto';
+import { PartialUpdateUser } from '../user/user.service';
 
 @ApiTags(`/${routesV1.guest.root}`)
 @Controller({ version: routesV1.version })
@@ -53,5 +65,20 @@ export class GuestController {
     return new PaginatedResponseGuestDto({
       ...paginated,
     });
+  }
+
+  @ApiOperation({ summary: 'Update guest' })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Patch(routesV1.guest.update)
+  async update(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @Body() updateGuestDto: UpdateGuestDto,
+  ): Promise<ResponseGuestDto> {
+    const partialUpdateUser = new PartialUpdateUser({
+      ...updateGuestDto,
+    });
+
+    return this.guestService.update(id, partialUpdateUser);
   }
 }

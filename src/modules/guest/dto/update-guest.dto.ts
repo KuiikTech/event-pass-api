@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsArray,
   IsEmail,
-  IsIn,
   IsOptional,
   IsString,
   Length,
@@ -12,11 +10,7 @@ import {
   NotContains,
 } from 'class-validator';
 
-import { RolesType } from 'src/modules/auth/types/roles.types';
-
-import { UserStatusType } from '../types/user-status.type';
-
-export class UpdateUserDto {
+export class UpdateGuestDto {
   @ApiProperty({
     example: 'Kuiik',
     description: 'first name of the user',
@@ -67,22 +61,12 @@ export class UpdateUserDto {
   password?: string;
 
   @ApiProperty({
-    example: `['${RolesType.EDITOR}','${RolesType.SUPERVISOR}']`,
-    description: `roles list of the user: ${Object.values(RolesType)}`,
-    default: [RolesType.GUEST],
+    example: '1234567890',
+    description: 'document number (nit) of the user',
+    required: false,
   })
   @IsOptional()
-  @IsArray()
-  roles?: string[];
-
-  @ApiProperty({
-    example: UserStatusType.ACTIVE,
-    description: `status of the user: ${Object.values(UserStatusType).join(
-      '||',
-    )}`,
-    default: UserStatusType.ACTIVE,
-  })
-  @IsOptional()
-  @IsIn(Object.values(UserStatusType))
-  status?: UserStatusType;
+  @IsString()
+  @MaxLength(300)
+  documentNumber?: string;
 }
