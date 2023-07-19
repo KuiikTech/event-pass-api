@@ -26,15 +26,10 @@ export class FindGuestQuery extends PaginatedQueryBase {
 
 export class PartialUpdateGuest {
   readonly firstName?: string;
-
   readonly lastName?: string;
-
   readonly phone?: string;
-
   readonly email?: string;
-
   readonly documentNumber?: string;
-
   readonly status?: string;
 
   constructor(props: PartialUpdateGuest) {

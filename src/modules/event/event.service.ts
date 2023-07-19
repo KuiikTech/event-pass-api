@@ -15,6 +15,7 @@ export class FindEventQuery extends PaginatedQueryBase {
   readonly initialDate?: Date;
   readonly finalDate?: Date;
   readonly host?: string;
+  readonly status?: string;
 
   constructor(props: PaginatedParams<FindEventQuery>) {
     super(props);
@@ -24,6 +25,31 @@ export class FindEventQuery extends PaginatedQueryBase {
     this.initialDate = props.initialDate;
     this.finalDate = props.finalDate;
     this.host = props.host;
+    this.status = props.status;
+  }
+}
+
+export class PartialUpdateEvent {
+  readonly name?: string;
+  readonly description?: string;
+  readonly address?: string;
+  readonly city?: string;
+  readonly initialDate?: Date;
+  readonly finalDate?: Date;
+  readonly host?: string;
+  readonly guestRoles?: string[];
+  readonly status?: string;
+
+  constructor(props: PartialUpdateEvent) {
+    this.name = props.name;
+    this.description = props.description;
+    this.address = props.address;
+    this.city = props.city;
+    this.initialDate = props.initialDate;
+    this.finalDate = props.finalDate;
+    this.host = props.host;
+    this.guestRoles = props.guestRoles;
+    this.status = props.status;
   }
 }
 
@@ -73,6 +99,28 @@ export class EventService {
       throw new HttpException('event doesnt exists', HttpStatus.BAD_REQUEST);
     }
     return this.sanitize(event);
+  }
+
+  async update(id: string, partialUpdateEvent: PartialUpdateEvent) {
+    const event = await this.eventModel.findById(id);
+    if (!event) {
+      throw new HttpException('event doesnt exists', HttpStatus.NOT_FOUND);
+    }
+
+    event.name = partialUpdateEvent.name ?? event.name;
+    event.description = partialUpdateEvent.description ?? event.description;
+    event.address = partialUpdateEvent.address ?? event.address;
+    event.city = partialUpdateEvent.city ?? event.city;
+    event.initialDate = partialUpdateEvent.initialDate ?? event.initialDate;
+    event.finalDate = partialUpdateEvent.finalDate ?? event.finalDate;
+    event.host = partialUpdateEvent.host ?? event.host;
+    event.guestRoles = partialUpdateEvent.guestRoles ?? event.guestRoles;
+    event.status = partialUpdateEvent.status ?? event.status;
+
+    const updatedEvent = await this.eventModel.findByIdAndUpdate(id, event, {
+      new: true,
+    });
+    return this.sanitize(updatedEvent);
   }
 
   async delete(id: string) {

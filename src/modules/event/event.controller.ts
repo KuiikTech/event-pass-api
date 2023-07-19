@@ -6,6 +6,7 @@ import {
   Body,
   Get,
   Param,
+  Patch,
   Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -21,12 +22,17 @@ import { routesV1 } from 'src/app.routes';
 import { ErrorResponse } from 'src/libs/api/responses/error.response';
 import { ParseMongoIdPipe } from 'src/libs/application/pipes/parse-mongo-id.pipe';
 
-import { EventService, FindEventQuery } from './event.service';
+import {
+  EventService,
+  FindEventQuery,
+  PartialUpdateEvent,
+} from './event.service';
 import { ResponseEventDto } from './dto/response-event.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { RequestEventDto } from './dto/request-event.dto';
 import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
 import { PaginatedResponseEventDto } from './dto/paginated-response-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 
 @ApiTags(`/${routesV1.event.root}`)
 @Controller({ version: routesV1.version })
@@ -73,6 +79,21 @@ export class EventController {
     @Param('id', ParseMongoIdPipe) id: string,
   ): Promise<ResponseEventDto> {
     return this.eventService.findById(id);
+  }
+
+  @ApiOperation({ summary: 'Update event' })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Patch(routesV1.event.update)
+  async update(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @Body() updateEventDto: UpdateEventDto,
+  ): Promise<ResponseEventDto> {
+    const partialUpdateUser = new PartialUpdateEvent({
+      ...updateEventDto,
+    });
+
+    return this.eventService.update(id, partialUpdateUser);
   }
 
   @ApiOperation({ summary: 'Delete event by id' })

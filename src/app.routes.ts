@@ -36,6 +36,7 @@ export const routesV1 = {
   event: {
     root: eventRoot,
     create: eventRoot,
+    update: `${eventRoot}/:id`,
     findById: `${eventRoot}/:id`,
     delete: `${eventRoot}/:id`,
   },
