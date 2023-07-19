@@ -23,13 +23,17 @@ export const routesV1 = {
     root: userRoot,
     create: userRoot,
     update: `${userRoot}/:id`,
+    findById: `${userRoot}/:id`,
   },
   guest: {
     root: guestRoot,
     create: guestRoot,
     update: `${guestRoot}/:id`,
+    findById: `${guestRoot}/:id`,
   },
   event: {
     root: eventRoot,
+    create: eventRoot,
+    findById: `${eventRoot}/:id`,
   },
 };

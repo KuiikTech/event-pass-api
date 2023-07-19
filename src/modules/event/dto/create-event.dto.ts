@@ -1,7 +1,7 @@
 import {
   ArrayMaxSize,
   ArrayNotEmpty,
-  IsDate,
+  IsDateString,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -48,24 +48,24 @@ export class CreateEventDto {
   city?: string;
 
   @ApiProperty({
-    example: '2023-07-18T03:30:12.819+00:00',
-    description: 'initial date of the event',
+    example: '2023-01-31T12:00:00Z',
+    description: 'initial date of the event, format ISO 8601',
   })
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   initialDate: Date;
 
   @ApiProperty({
-    example: '2023-07-18T03:30:12.819+00:00',
+    example: '2023-01-31T16:30:00Z',
     description: 'final date of the event',
   })
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   finalDate: Date;
 
   @ApiProperty({
-    example: 'no idea',
-    description: 'pendiente pordefinir',
+    example: 'Kuiik Tec',
+    description: 'event organizer',
   })
   @IsOptional()
   @IsString()

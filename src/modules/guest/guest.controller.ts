@@ -67,6 +67,16 @@ export class GuestController {
     });
   }
 
+  @ApiOperation({ summary: 'Find guest by id' })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Get(routesV1.guest.findById)
+  async findById(
+    @Param('id', ParseMongoIdPipe) id: string,
+  ): Promise<ResponseGuestDto> {
+    return this.guestService.findById(id);
+  }
+
   @ApiOperation({ summary: 'Update guest' })
   @ApiBadRequestResponse({ type: ErrorResponse })
   @UseGuards(AuthGuard('jwt'))
