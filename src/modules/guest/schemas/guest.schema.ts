@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+import { GuestStatusType } from '../types/guest-status.type';
+
 @Schema({
   timestamps: true,
 })
@@ -34,6 +36,22 @@ export class GuestModel extends Document {
     type: String,
   })
   documentNumber: string;
+
+  @Prop({
+    type: String,
+    required: true,
+    enum: GuestStatusType,
+    default: GuestStatusType.ACTIVE,
+  })
+  status: string;
 }
 
 export const GuestSchema = SchemaFactory.createForClass(GuestModel);
+
+GuestSchema.pre('find', function (next) {
+  const statusFilter = this.getQuery().status;
+  if (!statusFilter) {
+    this.where({ status: { $ne: GuestStatusType.DELETED } });
+  }
+  return next();
+});

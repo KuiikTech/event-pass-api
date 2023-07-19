@@ -3,7 +3,6 @@ import * as bcrypt from 'bcrypt';
 import { Document } from 'mongoose';
 
 import { UserStatusType } from '../types/user-status.type';
-import { IsOptional } from 'class-validator';
 
 @Schema({
   timestamps: true,
@@ -52,8 +51,8 @@ export class UserModel extends Document {
     type: String,
     required: true,
     enum: UserStatusType,
+    default: UserStatusType.ACTIVE,
   })
-  @IsOptional()
   status: string;
 }
 

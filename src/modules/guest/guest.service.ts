@@ -7,17 +7,20 @@ import { Paginated } from 'src/libs/ports/repository.port';
 
 import { CreateGuestDto } from './dto/create-guest.dto';
 import { GuestModel } from './schemas/guest.schema';
+import { GuestStatusType } from './types/guest-status.type';
 
 export class FindGuestQuery extends PaginatedQueryBase {
   readonly firstName?: string;
   readonly lastname?: string;
   readonly documentNumber?: string;
+  readonly status?: string;
 
   constructor(props: PaginatedParams<FindGuestQuery>) {
     super(props);
     this.firstName = props.firstName;
     this.lastname = props.lastname;
     this.documentNumber = props.documentNumber;
+    this.status = props.status;
   }
 }
 
@@ -32,12 +35,15 @@ export class PartialUpdateGuest {
 
   readonly documentNumber?: string;
 
+  readonly status?: string;
+
   constructor(props: PartialUpdateGuest) {
     this.firstName = props.firstName;
     this.lastName = props.lastName;
     this.phone = props.phone;
     this.email = props.email;
     this.documentNumber = props.documentNumber;
+    this.status = props.status;
   }
 }
 
@@ -106,6 +112,17 @@ export class GuestService {
       new: true,
     });
     return this.sanitize(updatedGuest);
+  }
+
+  async delete(id: string) {
+    const guest = await this.guestModel.findById(id);
+    if (!guest) {
+      throw new HttpException('guest doesnt exists', HttpStatus.NOT_FOUND);
+    }
+
+    await this.guestModel.findByIdAndUpdate(id, {
+      status: GuestStatusType.DELETED,
+    });
   }
 
   private sanitize(guest: GuestModel) {

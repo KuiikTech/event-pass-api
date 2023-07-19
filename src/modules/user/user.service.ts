@@ -151,6 +151,17 @@ export class UserService {
     return this.sanitize(updatedUser);
   }
 
+  async delete(id: string) {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new HttpException('user doesnt exists', HttpStatus.NOT_FOUND);
+    }
+
+    await this.userModel.findByIdAndUpdate(id, {
+      status: UserStatusType.DELETED,
+    });
+  }
+
   private sanitize(user: UserModel) {
     const sanitized = user.toObject();
     delete sanitized['password'];

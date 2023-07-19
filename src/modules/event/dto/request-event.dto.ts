@@ -1,12 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsDate,
+  IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
+
+import { EventStatusType } from '../types/event-status.type';
 
 export class RequestEventDto {
   @ApiProperty({
@@ -62,4 +65,15 @@ export class RequestEventDto {
   @IsOptional()
   @IsString()
   host?: string;
+
+  @ApiProperty({
+    example: EventStatusType.ACTIVE,
+    description: `status of the event: ${Object.values(EventStatusType).join(
+      '||',
+    )}`,
+    default: EventStatusType.ACTIVE,
+  })
+  @IsOptional()
+  @IsIn(Object.values(EventStatusType))
+  status?: EventStatusType;
 }
