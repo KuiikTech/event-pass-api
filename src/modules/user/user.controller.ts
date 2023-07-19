@@ -66,6 +66,16 @@ export class UserController {
     });
   }
 
+  @ApiOperation({ summary: 'Find user by id' })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Get(routesV1.user.findById)
+  async findById(
+    @Param('id', ParseMongoIdPipe) id: string,
+  ): Promise<ResponseUserDto> {
+    return this.userService.findById(id);
+  }
+
   @ApiOperation({ summary: 'Update user' })
   @ApiBadRequestResponse({ type: ErrorResponse })
   @UseGuards(AuthGuard('jwt'))

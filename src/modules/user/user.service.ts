@@ -123,6 +123,14 @@ export class UserService {
     });
   }
 
+  async findById(id: string) {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new HttpException('user doesnt exists', HttpStatus.BAD_REQUEST);
+    }
+    return this.sanitize(user);
+  }
+
   async update(id: string, partialUpdateUser: PartialUpdateUser) {
     const user = await this.userModel.findById(id);
     if (!user) {

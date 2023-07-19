@@ -81,6 +81,14 @@ export class GuestService {
     });
   }
 
+  async findById(id: string) {
+    const guest = await this.guestModel.findById(id);
+    if (!guest) {
+      throw new HttpException('guest doesnt exists', HttpStatus.BAD_REQUEST);
+    }
+    return this.sanitize(guest);
+  }
+
   async update(id: string, partialUpdateGuest: PartialUpdateGuest) {
     const guest = await this.guestModel.findById(id);
     if (!guest) {
