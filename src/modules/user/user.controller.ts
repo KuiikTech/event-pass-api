@@ -7,6 +7,7 @@ import {
   Get,
   Patch,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -89,5 +90,13 @@ export class UserController {
     });
 
     return this.userService.update(id, partialUpdateUser);
+  }
+
+  @ApiOperation({ summary: 'Delete user by id' })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(routesV1.user.delete)
+  async delete(@Param('id', ParseMongoIdPipe) id: string): Promise<void> {
+    this.userService.delete(id);
   }
 }

@@ -2,6 +2,7 @@ import {
   ArrayMaxSize,
   ArrayNotEmpty,
   IsDateString,
+  IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -9,6 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { EventStatusType } from '../types/event-status.type';
 
 export class CreateEventDto {
   @ApiProperty({
@@ -80,4 +82,15 @@ export class CreateEventDto {
   @ArrayMaxSize(100, { message: 'Guest role cannot exceed 100 characters.' })
   @IsString({ each: true })
   guestRoles?: string[];
+
+  @ApiProperty({
+    example: EventStatusType.ACTIVE,
+    description: `status of the event: ${Object.values(EventStatusType).join(
+      '||',
+    )}`,
+    default: EventStatusType.ACTIVE,
+  })
+  @IsOptional()
+  @IsIn(Object.values(EventStatusType))
+  status?: EventStatusType;
 }

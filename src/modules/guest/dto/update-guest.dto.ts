@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsIn,
   IsOptional,
   IsString,
   Length,
@@ -9,6 +10,8 @@ import {
   MinLength,
   NotContains,
 } from 'class-validator';
+
+import { GuestStatusType } from '../types/guest-status.type';
 
 export class UpdateGuestDto {
   @ApiProperty({
@@ -69,4 +72,15 @@ export class UpdateGuestDto {
   @IsString()
   @MaxLength(300)
   documentNumber?: string;
+
+  @ApiProperty({
+    example: GuestStatusType.ACTIVE,
+    description: `status of the guest: ${Object.values(GuestStatusType).join(
+      '||',
+    )}`,
+    default: GuestStatusType.ACTIVE,
+  })
+  @IsOptional()
+  @IsIn(Object.values(GuestStatusType))
+  status?: GuestStatusType;
 }

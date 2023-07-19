@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -22,13 +23,16 @@ import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
 import { ParseMongoIdPipe } from 'src/libs/application/pipes/parse-mongo-id.pipe';
 import { routesV1 } from 'src/app.routes';
 
-import { FindGuestQuery, GuestService } from './guest.service';
+import {
+  FindGuestQuery,
+  GuestService,
+  PartialUpdateGuest,
+} from './guest.service';
 import { CreateGuestDto } from './dto/create-guest.dto';
 import { ResponseGuestDto } from './dto/response-guest.dto';
 import { RequestGuestDto } from './dto/request-guest.dto';
 import { PaginatedResponseGuestDto } from './dto/paginated-response-guest.dto';
 import { UpdateGuestDto } from './dto/update-guest.dto';
-import { PartialUpdateUser } from '../user/user.service';
 
 @ApiTags(`/${routesV1.guest.root}`)
 @Controller({ version: routesV1.version })
@@ -85,10 +89,18 @@ export class GuestController {
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() updateGuestDto: UpdateGuestDto,
   ): Promise<ResponseGuestDto> {
-    const partialUpdateUser = new PartialUpdateUser({
+    const partialUpdateUser = new PartialUpdateGuest({
       ...updateGuestDto,
     });
 
     return this.guestService.update(id, partialUpdateUser);
+  }
+
+  @ApiOperation({ summary: 'Delete guest by id' })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(routesV1.guest.delete)
+  async delete(@Param('id', ParseMongoIdPipe) id: string): Promise<void> {
+    this.guestService.delete(id);
   }
 }

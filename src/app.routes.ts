@@ -24,16 +24,19 @@ export const routesV1 = {
     create: userRoot,
     update: `${userRoot}/:id`,
     findById: `${userRoot}/:id`,
+    delete: `${userRoot}/:id`,
   },
   guest: {
     root: guestRoot,
     create: guestRoot,
     update: `${guestRoot}/:id`,
     findById: `${guestRoot}/:id`,
+    delete: `${guestRoot}/:id`,
   },
   event: {
     root: eventRoot,
     create: eventRoot,
     findById: `${eventRoot}/:id`,
+    delete: `${eventRoot}/:id`,
   },
 };

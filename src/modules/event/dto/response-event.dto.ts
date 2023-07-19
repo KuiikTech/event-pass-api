@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EntityBaseResponse } from 'src/libs/api/responses/entity-base.response';
 
+import { EventStatusType } from '../types/event-status.type';
+
 export class ResponseEventDto extends EntityBaseResponse {
   @ApiProperty({
     example: 'Kuiik Party',
@@ -49,4 +51,13 @@ export class ResponseEventDto extends EntityBaseResponse {
     description: 'custom roles for event guests',
   })
   guestRoles?: string[];
+
+  @ApiProperty({
+    example: EventStatusType.ACTIVE,
+    description: `status of the event: ${Object.values(EventStatusType).join(
+      '||',
+    )}`,
+    default: EventStatusType.ACTIVE,
+  })
+  status?: EventStatusType;
 }

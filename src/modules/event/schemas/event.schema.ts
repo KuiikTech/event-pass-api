@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+import { EventStatusType } from '../types/event-status.type';
+
 @Schema()
 export class EventModel extends Document {
   @Prop({ type: String, required: true })
@@ -42,6 +44,22 @@ export class EventModel extends Document {
     type: [String],
   })
   guestRoles: string[];
+
+  @Prop({
+    type: String,
+    required: true,
+    enum: EventStatusType,
+    default: EventStatusType.ACTIVE,
+  })
+  status: string;
 }
 
 export const EventSchema = SchemaFactory.createForClass(EventModel);
+
+EventSchema.pre('find', function (next) {
+  const statusFilter = this.getQuery().status;
+  if (!statusFilter) {
+    this.where({ status: { $ne: EventStatusType.DELETED } });
+  }
+  return next();
+});

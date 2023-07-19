@@ -6,6 +6,7 @@ import {
   Body,
   Get,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -72,5 +73,13 @@ export class EventController {
     @Param('id', ParseMongoIdPipe) id: string,
   ): Promise<ResponseEventDto> {
     return this.eventService.findById(id);
+  }
+
+  @ApiOperation({ summary: 'Delete event by id' })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(routesV1.event.delete)
+  async delete(@Param('id', ParseMongoIdPipe) id: string): Promise<void> {
+    this.eventService.delete(id);
   }
 }

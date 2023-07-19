@@ -6,6 +6,7 @@ import { EventModel } from './schemas/event.schema';
 import { CreateEventDto } from './dto/create-event.dto';
 import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
 import { Paginated } from 'src/libs/ports/repository.port';
+import { EventStatusType } from './types/event-status.type';
 
 export class FindEventQuery extends PaginatedQueryBase {
   readonly name?: string;
@@ -72,6 +73,17 @@ export class EventService {
       throw new HttpException('event doesnt exists', HttpStatus.BAD_REQUEST);
     }
     return this.sanitize(event);
+  }
+
+  async delete(id: string) {
+    const guest = await this.eventModel.findById(id);
+    if (!guest) {
+      throw new HttpException('guest doesnt exists', HttpStatus.NOT_FOUND);
+    }
+
+    await this.eventModel.findByIdAndUpdate(id, {
+      status: EventStatusType.DELETED,
+    });
   }
 
   private sanitize(event: EventModel) {

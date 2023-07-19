@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EntityBaseResponse } from 'src/libs/api/responses/entity-base.response';
+import { GuestStatusType } from '../types/guest-status.type';
 
 export class ResponseGuestDto extends EntityBaseResponse {
   @ApiProperty({
@@ -31,4 +32,13 @@ export class ResponseGuestDto extends EntityBaseResponse {
     description: 'document number (nit) of the user',
   })
   documentNumber?: string;
+
+  @ApiProperty({
+    example: GuestStatusType.ACTIVE,
+    description: `status of the guest: ${Object.values(GuestStatusType).join(
+      '||',
+    )}`,
+    default: GuestStatusType.ACTIVE,
+  })
+  status?: GuestStatusType;
 }
