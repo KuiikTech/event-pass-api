@@ -25,6 +25,7 @@ export const routesV1 = {
     create: userRoot,
     update: `${userRoot}/:id`,
     findById: `${userRoot}/:id`,
+    findWithSearch: `${userRoot}/search`,
     delete: `${userRoot}/:id`,
   },
   guest: {
