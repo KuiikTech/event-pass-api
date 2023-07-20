@@ -11,3 +11,32 @@ export class Paginated<T> {
     this.data = props.data;
   }
 }
+
+export interface FilterToFindWithSearch {
+  $or: Array<{
+    [field: string]: { $regex: string; $options: string };
+  }>;
+}
+
+export interface SearchFilters {
+  [name: string]: unknown;
+}
+
+export class FilterToFindFactory {
+  static createFilterWithSearch(
+    searchFilters: SearchFilters,
+  ): FilterToFindWithSearch {
+    const orArray = Object.entries(searchFilters).map(
+      ([fieldName, searchValue]) => ({
+        [fieldName]: {
+          $regex: `.*${searchValue}.*`,
+          $options: 'i',
+        },
+      }),
+    );
+
+    return {
+      $or: orArray,
+    };
+  }
+}

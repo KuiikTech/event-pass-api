@@ -7,7 +7,12 @@ import { PayloadEntity } from 'src/modules/auth/entities/payload.entity';
 import { LoginDto } from 'src/modules/auth/dto/login.dto';
 import { RolesType } from 'src/modules/auth/types/roles.types';
 import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
-import { Paginated } from 'src/libs/ports/repository.port';
+import {
+  SearchFilters,
+  FilterToFindWithSearch,
+  FilterToFindFactory,
+  Paginated,
+} from 'src/libs/ports/repository.port';
 
 import { UserModelName, UserModel } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -101,19 +106,17 @@ export class UserService {
     return this.sanitize(user);
   }
 
-  async find(findUserQuery: FindUserQuery) {
-    const filters = {
-      firstName: findUserQuery.firstName,
-      lastName: findUserQuery.lastName,
-      status: findUserQuery.status,
-    };
+  async find(
+    filters: SearchFilters | FilterToFindWithSearch,
+    paginatedQueryBase: PaginatedQueryBase,
+  ) {
     const result = await this.userModel.paginate(
       { ...filters },
       {
-        limit: findUserQuery.limit,
-        offset: findUserQuery.offset,
-        page: findUserQuery.page,
-        sort: findUserQuery.orderBy,
+        limit: paginatedQueryBase.limit,
+        offset: paginatedQueryBase.offset,
+        page: paginatedQueryBase.page,
+        sort: paginatedQueryBase.orderBy,
       },
     );
 
@@ -125,28 +128,27 @@ export class UserService {
     });
   }
 
-  async findWithSearch(findUserQuery: FindUserQuery) {
-    const result = await this.userModel.paginate(
+  async findWithExact(findUserQuery: FindUserQuery) {
+    return this.find(
       {
-        $or: [
-          { firstName: { $regex: findUserQuery.firstName } },
-          { lastName: { $regex: findUserQuery.lastName } },
-          { email: { $regex: findUserQuery.email } },
-        ],
+        firstName: findUserQuery.firstName,
+        lastName: findUserQuery.lastName,
+        email: findUserQuery.email,
+        status: findUserQuery.status,
       },
-      {
-        limit: findUserQuery.limit,
-        offset: findUserQuery.offset,
-        page: findUserQuery.page,
-        sort: findUserQuery.orderBy,
-      },
+      { ...findUserQuery },
     );
+  }
 
-    return new Paginated({
-      data: result.docs.map((user) => this.sanitize(user)),
-      count: result.totalDocs,
-      limit: result.limit,
-      page: result.page,
+  async findWithSearch(findUserQuery: FindUserQuery) {
+    const searchCriteria: FilterToFindWithSearch =
+      FilterToFindFactory.createFilterWithSearch({
+        firstName: `.*${findUserQuery.firstName}.*`,
+        lastName: `.*${findUserQuery.lastName}.*`,
+        email: `.*${findUserQuery.email}.*`,
+      });
+    return this.find(searchCriteria, {
+      ...findUserQuery,
     });
   }
 

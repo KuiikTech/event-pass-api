@@ -21,6 +21,8 @@ import {
 import { routesV1 } from 'src/app.routes';
 import { ErrorResponse } from 'src/libs/api/responses/error.response';
 import { ParseMongoIdPipe } from 'src/libs/application/pipes/parse-mongo-id.pipe';
+import { PaginatedQueryWithSearchDto } from 'src/libs/api/dto/paginated-query-with-search.dto';
+import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
 
 import {
   EventService,
@@ -30,7 +32,6 @@ import {
 import { ResponseEventDto } from './dto/response-event.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { RequestEventDto } from './dto/request-event.dto';
-import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
 import { PaginatedResponseEventDto } from './dto/paginated-response-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 
@@ -64,7 +65,31 @@ export class EventController {
       orderBy: paginatedQueryDto?.orderBy,
     });
 
-    const paginated = await this.eventService.find(query);
+    const paginated = await this.eventService.findWithExact(query);
+
+    return new PaginatedResponseEventDto({
+      ...paginated,
+    });
+  }
+
+  @ApiOperation({
+    summary: 'List events with search value by: name, address, city, host',
+  })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Get(routesV1.event.findWithSearch)
+  async listWithSearch(
+    @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
+  ): Promise<PaginatedResponseEventDto> {
+    const query = new FindEventQuery({
+      ...paginatedQueryWithSearchDto,
+      name: paginatedQueryWithSearchDto?.search,
+      address: paginatedQueryWithSearchDto?.search,
+      city: paginatedQueryWithSearchDto?.search,
+      host: paginatedQueryWithSearchDto?.search,
+    });
+
+    const paginated = await this.eventService.findWithSearch(query);
 
     return new PaginatedResponseEventDto({
       ...paginated,

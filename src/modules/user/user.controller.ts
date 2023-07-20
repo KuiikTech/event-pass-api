@@ -61,14 +61,16 @@ export class UserController {
       orderBy: paginatedQueryDto?.orderBy,
     });
 
-    const paginated = await this.userService.find(query);
+    const paginated = await this.userService.findWithExact(query);
 
     return new PaginatedResponseUserDto({
       ...paginated,
     });
   }
 
-  @ApiOperation({ summary: 'List users with search value' })
+  @ApiOperation({
+    summary: 'List users with search value by: firstName, lastName, email',
+  })
   @ApiBadRequestResponse({ type: ErrorResponse })
   @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.user.findWithSearch)
@@ -76,12 +78,10 @@ export class UserController {
     @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
   ): Promise<PaginatedResponseUserDto> {
     const query = new FindUserQuery({
+      ...paginatedQueryWithSearchDto,
       firstName: paginatedQueryWithSearchDto?.search,
       lastName: paginatedQueryWithSearchDto?.search,
       email: paginatedQueryWithSearchDto?.search,
-      limit: paginatedQueryWithSearchDto?.limit,
-      page: paginatedQueryWithSearchDto?.page,
-      orderBy: paginatedQueryWithSearchDto?.orderBy,
     });
 
     const paginated = await this.userService.findWithSearch(query);
