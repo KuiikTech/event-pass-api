@@ -3,6 +3,8 @@ import { Document } from 'mongoose';
 
 import { GuestStatusType } from '../types/guest-status.type';
 
+export const GuestModelName = 'Guest';
+
 @Schema({
   timestamps: true,
 })

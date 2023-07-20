@@ -4,6 +4,7 @@ const authRoot = 'auth';
 const userRoot = 'user';
 const guestRoot = 'guest';
 const eventRoot = 'event';
+const codeRoot = 'code';
 
 // Api versions
 const v1 = 'v1';
@@ -39,5 +40,12 @@ export const routesV1 = {
     update: `${eventRoot}/:id`,
     findById: `${eventRoot}/:id`,
     delete: `${eventRoot}/:id`,
+  },
+  code: {
+    root: codeRoot,
+    create: codeRoot,
+    update: `${codeRoot}/:id`,
+    findById: `${codeRoot}/:id`,
+    delete: `${codeRoot}/:id`,
   },
 };

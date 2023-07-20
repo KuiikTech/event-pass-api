@@ -9,7 +9,7 @@ import { RolesType } from 'src/modules/auth/types/roles.types';
 import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
 import { Paginated } from 'src/libs/ports/repository.port';
 
-import { UserModel } from './schemas/user.schema';
+import { UserModelName, UserModel } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserStatusType } from './types/user-status.type';
 
@@ -55,7 +55,7 @@ export class PartialUpdateUser {
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel('User') private userModel: PaginateModel<UserModel>,
+    @InjectModel(UserModelName) private userModel: PaginateModel<UserModel>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
