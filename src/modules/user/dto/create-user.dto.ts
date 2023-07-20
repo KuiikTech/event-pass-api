@@ -10,10 +10,11 @@ import {
   MinLength,
   NotContains,
 } from 'class-validator';
-import { UserStatusType } from '../types/user-status.type';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { RolesType } from 'src/modules/auth/types/roles.types';
+
+import { UserStatusType } from '../types/user-status.type';
 
 export class CreateUserDto {
   @ApiProperty({

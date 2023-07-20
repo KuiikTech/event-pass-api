@@ -4,6 +4,8 @@ import { Document } from 'mongoose';
 
 import { UserStatusType } from '../types/user-status.type';
 
+export const UserModelName = 'User';
+
 @Schema({
   timestamps: true,
 })

@@ -3,6 +3,8 @@ import { Document } from 'mongoose';
 
 import { EventStatusType } from '../types/event-status.type';
 
+export const EventModelName = 'Event';
+
 @Schema()
 export class EventModel extends Document {
   @Prop({ type: String, required: true })

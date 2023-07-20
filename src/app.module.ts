@@ -24,6 +24,7 @@ import { UserModule } from './modules/user/user.module';
 import { LoggerMiddleware } from './libs/application/middlewares/logger.middleware';
 import { GuestModule } from './modules/guest/guest.module';
 import { EventModule } from './modules/event/event.module';
+import { CodeModule } from './modules/code/code.module';
 
 import 'reflect-metadata';
 
@@ -49,6 +50,7 @@ import 'reflect-metadata';
     AuthModule,
     GuestModule,
     EventModule,
+    CodeModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy, AuthService],

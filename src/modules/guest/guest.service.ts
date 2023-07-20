@@ -6,7 +6,7 @@ import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
 import { Paginated } from 'src/libs/ports/repository.port';
 
 import { CreateGuestDto } from './dto/create-guest.dto';
-import { GuestModel } from './schemas/guest.schema';
+import { GuestModelName, GuestModel } from './schemas/guest.schema';
 import { GuestStatusType } from './types/guest-status.type';
 
 export class FindGuestQuery extends PaginatedQueryBase {
@@ -45,7 +45,7 @@ export class PartialUpdateGuest {
 @Injectable()
 export class GuestService {
   constructor(
-    @InjectModel('Guest') private guestModel: PaginateModel<GuestModel>,
+    @InjectModel(GuestModelName) private guestModel: PaginateModel<GuestModel>,
   ) {}
 
   async create(createGuestDto: CreateGuestDto) {
@@ -102,6 +102,7 @@ export class GuestService {
     guest.email = partialUpdateGuest.email ?? guest.email;
     guest.documentNumber =
       partialUpdateGuest.documentNumber ?? guest.documentNumber;
+    guest.status = partialUpdateGuest.status ?? guest.status;
 
     const updatedGuest = await this.guestModel.findByIdAndUpdate(id, guest, {
       new: true,
