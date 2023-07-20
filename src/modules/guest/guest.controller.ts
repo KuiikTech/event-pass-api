@@ -18,10 +18,11 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
+import { routesV1 } from 'src/app.routes';
 import { ErrorResponse } from 'src/libs/api/responses/error.response';
 import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
 import { ParseMongoIdPipe } from 'src/libs/application/pipes/parse-mongo-id.pipe';
-import { routesV1 } from 'src/app.routes';
+import { PaginatedQueryWithSearchDto } from 'src/libs/api/dto/paginated-query-with-search.dto';
 
 import {
   FindGuestQuery,
@@ -64,7 +65,31 @@ export class GuestController {
       orderBy: paginatedQueryDto?.orderBy,
     });
 
-    const paginated = await this.guestService.find(query);
+    const paginated = await this.guestService.findWithExact(query);
+
+    return new PaginatedResponseGuestDto({
+      ...paginated,
+    });
+  }
+
+  @ApiOperation({
+    summary:
+      'List guests with search value by: firstName, lastName, documentNumber',
+  })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Get(routesV1.guest.findWithSearch)
+  async listWithSearch(
+    @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
+  ): Promise<PaginatedResponseGuestDto> {
+    const query = new FindGuestQuery({
+      ...paginatedQueryWithSearchDto,
+      firstName: paginatedQueryWithSearchDto?.search,
+      lastName: paginatedQueryWithSearchDto?.search,
+      documentNumber: paginatedQueryWithSearchDto?.search,
+    });
+
+    const paginated = await this.guestService.findWithSearch(query);
 
     return new PaginatedResponseGuestDto({
       ...paginated,

@@ -2,10 +2,16 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginateModel } from 'mongoose';
 
+import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
+import {
+  FilterToFindFactory,
+  FilterToFindWithSearch,
+  Paginated,
+  SearchFilters,
+} from 'src/libs/ports/repository.port';
+
 import { EventModel, EventModelName } from './schemas/event.schema';
 import { CreateEventDto } from './dto/create-event.dto';
-import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
-import { Paginated } from 'src/libs/ports/repository.port';
 import { EventStatusType } from './types/event-status.type';
 
 export class FindEventQuery extends PaginatedQueryBase {
@@ -66,22 +72,17 @@ export class EventService {
     return this.sanitize(createdEvent);
   }
 
-  async find(findUserQuery: FindEventQuery) {
-    const filters = {
-      name: findUserQuery.name,
-      address: findUserQuery.address,
-      city: findUserQuery.city,
-      initialDate: findUserQuery.initialDate,
-      finalDate: findUserQuery.finalDate,
-      host: findUserQuery.host,
-    };
+  async find(
+    filters: SearchFilters | FilterToFindWithSearch,
+    paginatedQueryBase: PaginatedQueryBase,
+  ) {
     const result = await this.eventModel.paginate(
       { ...filters },
       {
-        limit: findUserQuery.limit,
-        offset: findUserQuery.offset,
-        page: findUserQuery.page,
-        sort: findUserQuery.orderBy,
+        limit: paginatedQueryBase.limit,
+        offset: paginatedQueryBase.offset,
+        page: paginatedQueryBase.page,
+        sort: paginatedQueryBase.orderBy,
       },
     );
 
@@ -90,6 +91,34 @@ export class EventService {
       count: result.totalDocs,
       limit: result.limit,
       page: result.page,
+    });
+  }
+
+  async findWithExact(findEventQuery: FindEventQuery) {
+    return this.find(
+      {
+        name: findEventQuery.name,
+        address: findEventQuery.address,
+        city: findEventQuery.city,
+        initialDate: findEventQuery.initialDate,
+        finalDate: findEventQuery.finalDate,
+        host: findEventQuery.host,
+        status: findEventQuery.status,
+      },
+      { ...findEventQuery },
+    );
+  }
+
+  async findWithSearch(findEventQuery: FindEventQuery) {
+    const searchCriteria: FilterToFindWithSearch =
+      FilterToFindFactory.createFilterWithSearch({
+        name: `.*${findEventQuery.name}.*`,
+        address: `.*${findEventQuery.address}.*`,
+        city: `.*${findEventQuery.city}.*`,
+        host: `.*${findEventQuery.host}.*`,
+      });
+    return this.find(searchCriteria, {
+      ...findEventQuery,
     });
   }
 

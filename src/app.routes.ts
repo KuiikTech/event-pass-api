@@ -33,6 +33,7 @@ export const routesV1 = {
     create: guestRoot,
     update: `${guestRoot}/:id`,
     findById: `${guestRoot}/:id`,
+    findWithSearch: `${guestRoot}/search`,
     delete: `${guestRoot}/:id`,
   },
   event: {
@@ -40,6 +41,7 @@ export const routesV1 = {
     create: eventRoot,
     update: `${eventRoot}/:id`,
     findById: `${eventRoot}/:id`,
+    findWithSearch: `${eventRoot}/search`,
     delete: `${eventRoot}/:id`,
   },
   code: {
