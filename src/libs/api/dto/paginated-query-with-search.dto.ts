@@ -5,7 +5,7 @@ import { IsInt, IsOptional, Max, Min } from 'class-validator';
 import { OrderByTransform } from 'src/libs/application/transforms/order-by.transform';
 import { OrderBy } from 'src/libs/ddd/query.base';
 
-export class PaginatedQueryDto {
+export class PaginatedQueryWithSearchDto {
   @ApiPropertyOptional({
     example: 10,
     description: 'Specifies a limit of returned records',
@@ -39,4 +39,11 @@ export class PaginatedQueryDto {
   @IsOptional()
   @Transform((params) => OrderByTransform(params))
   readonly orderBy?: OrderBy;
+
+  @ApiPropertyOptional({
+    example: 'kuiik',
+    description: 'Value to filter the search',
+  })
+  @IsOptional()
+  readonly search?: string;
 }

@@ -15,13 +15,15 @@ import { UserStatusType } from './types/user-status.type';
 
 export class FindUserQuery extends PaginatedQueryBase {
   readonly firstName?: string;
-  readonly lastname?: string;
+  readonly lastName?: string;
+  readonly email?: string;
   readonly status?: string;
 
   constructor(props: PaginatedParams<FindUserQuery>) {
     super(props);
     this.firstName = props.firstName;
-    this.lastname = props.lastname;
+    this.lastName = props.lastName;
+    this.email = props.email;
     this.status = props.status;
   }
 }
@@ -102,11 +104,36 @@ export class UserService {
   async find(findUserQuery: FindUserQuery) {
     const filters = {
       firstName: findUserQuery.firstName,
-      lastName: findUserQuery.lastname,
+      lastName: findUserQuery.lastName,
       status: findUserQuery.status,
     };
     const result = await this.userModel.paginate(
       { ...filters },
+      {
+        limit: findUserQuery.limit,
+        offset: findUserQuery.offset,
+        page: findUserQuery.page,
+        sort: findUserQuery.orderBy,
+      },
+    );
+
+    return new Paginated({
+      data: result.docs.map((user) => this.sanitize(user)),
+      count: result.totalDocs,
+      limit: result.limit,
+      page: result.page,
+    });
+  }
+
+  async findWithSearch(findUserQuery: FindUserQuery) {
+    const result = await this.userModel.paginate(
+      {
+        $or: [
+          { firstName: { $regex: findUserQuery.firstName } },
+          { lastName: { $regex: findUserQuery.lastName } },
+          { email: { $regex: findUserQuery.email } },
+        ],
+      },
       {
         limit: findUserQuery.limit,
         offset: findUserQuery.offset,

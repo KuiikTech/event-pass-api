@@ -36,6 +36,14 @@ export class CodeService {
     );
   }
 
+  async findById(id: string) {
+    const code = await this.codeModel.findById(id);
+    if (!code) {
+      throw new HttpException('code doesnt exists', HttpStatus.BAD_REQUEST);
+    }
+    return this.sanitize(code);
+  }
+
   private sanitize(code: CodeModel) {
     const sanitized = code.toObject();
     // delete sanitized['password'];

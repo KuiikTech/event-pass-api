@@ -21,13 +21,14 @@ import { routesV1 } from 'src/app.routes';
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
 import { ErrorResponse } from 'src/libs/api/responses/error.response';
 import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
+import { ParseMongoIdPipe } from 'src/libs/application/pipes/parse-mongo-id.pipe';
+import { PaginatedQueryWithSearchDto } from 'src/libs/api/dto/paginated-query-with-search.dto';
 
 import { FindUserQuery, PartialUpdateUser, UserService } from './user.service';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { RequestUserDto } from './dto/request-user.dto';
 import { PaginatedResponseUserDto } from './dto/paginated-response-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ParseMongoIdPipe } from 'src/libs/application/pipes/parse-mongo-id.pipe';
 
 @ApiTags(`/${routesV1.user.create}`)
 @ApiBearerAuth()
@@ -61,6 +62,29 @@ export class UserController {
     });
 
     const paginated = await this.userService.find(query);
+
+    return new PaginatedResponseUserDto({
+      ...paginated,
+    });
+  }
+
+  @ApiOperation({ summary: 'List users with search value' })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @UseGuards(AuthGuard('jwt'))
+  @Get(routesV1.user.findWithSearch)
+  async listWithSearch(
+    @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
+  ): Promise<PaginatedResponseUserDto> {
+    const query = new FindUserQuery({
+      firstName: paginatedQueryWithSearchDto?.search,
+      lastName: paginatedQueryWithSearchDto?.search,
+      email: paginatedQueryWithSearchDto?.search,
+      limit: paginatedQueryWithSearchDto?.limit,
+      page: paginatedQueryWithSearchDto?.page,
+      orderBy: paginatedQueryWithSearchDto?.orderBy,
+    });
+
+    const paginated = await this.userService.findWithSearch(query);
 
     return new PaginatedResponseUserDto({
       ...paginated,
