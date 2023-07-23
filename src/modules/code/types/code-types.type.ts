@@ -1,4 +1,4 @@
 export enum CodeTypesType {
   QR = 'qr',
-  BAR = 'inactive',
+  BAR = 'barcode',
 }
