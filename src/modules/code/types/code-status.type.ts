@@ -3,4 +3,5 @@ export enum CodeStatusType {
   ASSOCIATED = 'associated',
   AVAILABLE = 'available',
   PROCESSED = 'processed',
+  DELETED = 'deleted',
 }

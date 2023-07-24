@@ -43,3 +43,11 @@ export class CodeModel extends Document {
 }
 
 export const CodeSchema = SchemaFactory.createForClass(CodeModel);
+
+CodeSchema.pre('find', function (next) {
+  const statusFilter = this.getQuery().status;
+  if (!statusFilter) {
+    this.where({ status: { $ne: CodeStatusType.DELETED } });
+  }
+  return next();
+});

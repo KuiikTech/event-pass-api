@@ -18,7 +18,7 @@ export class CreateManyCodesDto {
   @IsNotEmpty()
   @IsString()
   @IsEnum(CodeTypesType)
-  type: string;
+  readonly type: string;
 
   @ApiProperty({
     example: 10,
@@ -27,7 +27,7 @@ export class CreateManyCodesDto {
   @IsNotEmpty()
   @Max(1000)
   @Min(1)
-  amount: number;
+  readonly amount: number;
 
   @ApiProperty({
     example: '64b74abdb8d0fb6b13b4f299',
@@ -35,5 +35,5 @@ export class CreateManyCodesDto {
   })
   @IsNotEmpty()
   @IsMongoId()
-  eventId: string;
+  readonly eventId: string;
 }

@@ -18,7 +18,7 @@ export class RequestGuestDto {
   @IsString()
   @MaxLength(100)
   @MinLength(1)
-  firstName?: string;
+  readonly firstName?: string;
 
   @ApiProperty({
     example: 'Tec',
@@ -28,7 +28,7 @@ export class RequestGuestDto {
   @IsString()
   @MaxLength(100)
   @MinLength(1)
-  lastName?: string;
+  readonly lastName?: string;
 
   @ApiProperty({
     example: '1234567890',
@@ -38,7 +38,7 @@ export class RequestGuestDto {
   @IsOptional()
   @IsString()
   @MaxLength(300)
-  documentNumber?: string;
+  readonly documentNumber?: string;
 
   @ApiProperty({
     example: GuestStatusType.ACTIVE,
@@ -49,5 +49,5 @@ export class RequestGuestDto {
   })
   @IsOptional()
   @IsIn(Object.values(GuestStatusType))
-  status?: GuestStatusType;
+  readonly status?: GuestStatusType;
 }
