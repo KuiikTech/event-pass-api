@@ -68,20 +68,29 @@ export class UserService {
   async create(createUserDto: CreateUserDto) {
     const { email } = createUserDto;
     const user = await this.userModel.findOne({ email });
+
     if (user) {
       throw new HttpException('user already exists', HttpStatus.BAD_REQUEST);
     }
-    if (!createUserDto.roles || createUserDto.roles.length === 0) {
-      createUserDto.roles = [RolesType.GUEST];
-    }
-    if (
-      !createUserDto.status ||
-      Object.values(UserStatusType).includes(createUserDto.status)
-    ) {
-      createUserDto.status = UserStatusType.ACTIVE;
+
+    let roles = createUserDto.roles;
+    if (!roles || roles.length === 0) {
+      roles = [RolesType.GUEST];
     }
 
-    const createdUser = new this.userModel(createUserDto);
+    let status = createUserDto.status;
+    if (
+      !status ||
+      !Object.values(UserStatusType).includes(createUserDto.status)
+    ) {
+      status = UserStatusType.ACTIVE;
+    }
+
+    const createdUser = new this.userModel({
+      ...createUserDto,
+      roles,
+      status,
+    });
     await createdUser.save();
 
     return this.sanitize(createdUser);

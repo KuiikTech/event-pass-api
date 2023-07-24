@@ -19,7 +19,7 @@ export class CreateGuestDto {
   @IsString()
   @MaxLength(100)
   @MinLength(1)
-  firstName: string;
+  readonly firstName: string;
 
   @ApiProperty({
     example: 'Event Pass',
@@ -28,7 +28,7 @@ export class CreateGuestDto {
   @IsString()
   @MaxLength(100)
   @MinLength(1)
-  lastName: string;
+  readonly lastName: string;
 
   @ApiProperty({
     example: '+51 (123) 456 7899',
@@ -37,7 +37,7 @@ export class CreateGuestDto {
   })
   @IsOptional()
   @Matches(/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/)
-  phone?: number;
+  readonly phone?: number;
 
   @ApiProperty({
     example: 'kuiik@email.com',
@@ -46,7 +46,7 @@ export class CreateGuestDto {
   @IsEmail()
   @MaxLength(300)
   @MinLength(5)
-  email: string;
+  readonly email: string;
 
   @ApiProperty({
     example: '1234567890',
@@ -56,7 +56,7 @@ export class CreateGuestDto {
   @IsOptional()
   @IsString()
   @MaxLength(300)
-  documentNumber?: string;
+  readonly documentNumber?: string;
 
   @ApiProperty({
     example: GuestStatusType.ACTIVE,
@@ -67,5 +67,5 @@ export class CreateGuestDto {
   })
   @IsOptional()
   @IsIn(Object.values(GuestStatusType))
-  status?: GuestStatusType;
+  readonly status?: GuestStatusType;
 }

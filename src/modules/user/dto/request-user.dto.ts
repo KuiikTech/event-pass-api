@@ -18,7 +18,7 @@ export class RequestUserDto {
   @IsString()
   @MaxLength(100)
   @MinLength(1)
-  firstName?: string;
+  readonly firstName?: string;
 
   @ApiProperty({
     example: 'Tec',
@@ -28,7 +28,7 @@ export class RequestUserDto {
   @IsString()
   @MaxLength(100)
   @MinLength(1)
-  lastName?: string;
+  readonly lastName?: string;
 
   @ApiProperty({
     example: UserStatusType.ACTIVE,

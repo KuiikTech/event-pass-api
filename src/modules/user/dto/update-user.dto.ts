@@ -25,7 +25,7 @@ export class UpdateUserDto {
   @IsString()
   @MaxLength(100)
   @MinLength(1)
-  firstName?: string;
+  readonly firstName?: string;
 
   @ApiProperty({
     example: 'Tec',
@@ -35,7 +35,7 @@ export class UpdateUserDto {
   @IsString()
   @MaxLength(100)
   @MinLength(1)
-  lastName?: string;
+  readonly lastName?: string;
 
   @ApiProperty({
     example: '+51 (123) 456 7899',
@@ -44,7 +44,7 @@ export class UpdateUserDto {
   })
   @IsOptional()
   @Matches(/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/)
-  phone?: string;
+  readonly phone?: string;
 
   @ApiProperty({
     example: 'kuiik@email.com',
@@ -54,7 +54,7 @@ export class UpdateUserDto {
   @IsEmail()
   @MaxLength(300)
   @MinLength(5)
-  email?: string;
+  readonly email?: string;
 
   @ApiProperty({
     example: 'dummy123*',
@@ -64,7 +64,7 @@ export class UpdateUserDto {
   @IsString()
   @Length(8, 100)
   @NotContains(' ')
-  password?: string;
+  readonly password?: string;
 
   @ApiProperty({
     example: `['${RolesType.EDITOR}','${RolesType.SUPERVISOR}']`,
@@ -73,7 +73,7 @@ export class UpdateUserDto {
   })
   @IsOptional()
   @IsArray()
-  roles?: string[];
+  readonly roles?: string[];
 
   @ApiProperty({
     example: UserStatusType.ACTIVE,
@@ -84,5 +84,5 @@ export class UpdateUserDto {
   })
   @IsOptional()
   @IsIn(Object.values(UserStatusType))
-  status?: UserStatusType;
+  readonly status?: UserStatusType;
 }
