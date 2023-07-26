@@ -36,6 +36,8 @@ import { PaginatedResponseGuestDto } from './dto/paginated-response-guest.dto';
 import { UpdateGuestDto } from './dto/update-guest.dto';
 
 @ApiTags(`/${routesV1.guest.root}`)
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @Controller({ version: routesV1.version })
 export class GuestController {
   constructor(private guestService: GuestService) {}
@@ -43,8 +45,6 @@ export class GuestController {
   @ApiOperation({ summary: 'Create a guest' })
   @ApiOkResponse({ type: ResponseGuestDto })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
   @Post(routesV1.guest.create)
   async create(@Body() createGuestDto: CreateGuestDto) {
     return this.guestService.create(createGuestDto);
@@ -52,7 +52,6 @@ export class GuestController {
 
   @ApiOperation({ summary: 'List guests' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.guest.root)
   async list(
     @Body() requestGuestDto: RequestGuestDto,
@@ -77,7 +76,6 @@ export class GuestController {
       'List guests with search value by: firstName, lastName, documentNumber',
   })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.guest.findWithSearch)
   async listWithSearch(
     @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
@@ -98,7 +96,6 @@ export class GuestController {
 
   @ApiOperation({ summary: 'Find guest by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.guest.findById)
   async findById(
     @Param('id', ParseMongoIdPipe) id: string,
@@ -108,7 +105,6 @@ export class GuestController {
 
   @ApiOperation({ summary: 'Update guest' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Patch(routesV1.guest.update)
   async update(
     @Param('id', ParseMongoIdPipe) id: string,
@@ -123,7 +119,6 @@ export class GuestController {
 
   @ApiOperation({ summary: 'Delete guest by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Delete(routesV1.guest.delete)
   async delete(@Param('id', ParseMongoIdPipe) id: string): Promise<void> {
     this.guestService.delete(id);

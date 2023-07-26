@@ -32,13 +32,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags(`/${routesV1.user.root}`)
 @ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @Controller({ version: routesV1.version })
 export class UserController {
   constructor(private userService: UserService) {}
 
   @ApiOperation({ summary: 'Create a user' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Post(routesV1.user.create)
   async register(
     @Body() createUserDto: CreateUserDto,
@@ -48,7 +48,6 @@ export class UserController {
 
   @ApiOperation({ summary: 'List users' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.user.root)
   async list(
     @Body() requestUserDto: RequestUserDto,
@@ -72,7 +71,6 @@ export class UserController {
     summary: 'List users with search value by: firstName, lastName, email',
   })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.user.findWithSearch)
   async listWithSearch(
     @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
@@ -93,7 +91,6 @@ export class UserController {
 
   @ApiOperation({ summary: 'Find user by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.user.findById)
   async findById(
     @Param('id', ParseMongoIdPipe) id: string,
@@ -103,7 +100,6 @@ export class UserController {
 
   @ApiOperation({ summary: 'Update user' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Patch(routesV1.user.update)
   async update(
     @Param('id', ParseMongoIdPipe) id: string,
@@ -118,7 +114,6 @@ export class UserController {
 
   @ApiOperation({ summary: 'Delete user by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Delete(routesV1.user.delete)
   async delete(@Param('id', ParseMongoIdPipe) id: string): Promise<void> {
     this.userService.delete(id);

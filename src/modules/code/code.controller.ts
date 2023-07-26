@@ -32,6 +32,8 @@ import { UpdateCodeDto } from './dto/update-code.dto';
 import { ResponseUpdateManyCodesDto } from './dto/response-update-many-codes.dto';
 
 @ApiTags(`/${routesV1.code.root}`)
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @Controller({ version: routesV1.version })
 export class CodeController {
   constructor(private codeService: CodeService) {}
@@ -39,8 +41,6 @@ export class CodeController {
   @ApiOperation({ summary: 'Create many codes' })
   @ApiOkResponse({ type: ResponseCodeDto })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
   @Post(routesV1.code.create)
   async createMany(
     @Body() createManyCodesDto: CreateManyCodesDto,
@@ -50,7 +50,6 @@ export class CodeController {
 
   @ApiOperation({ summary: 'Find code by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.code.findById)
   async findById(
     @Param('id', ParseMongoIdPipe) id: string,
@@ -60,7 +59,6 @@ export class CodeController {
 
   @ApiOperation({ summary: 'Find codes by event id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.code.findByEventId)
   async findByEventId(
     @Param('eventId', ParseMongoIdPipe) eventId: string,
@@ -81,7 +79,6 @@ export class CodeController {
 
   @ApiOperation({ summary: 'List codes' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.code.root)
   async list(
     @Body() requestCodeDto: RequestCodeDto,
@@ -103,7 +100,6 @@ export class CodeController {
 
   @ApiOperation({ summary: 'Update code by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Patch(routesV1.code.update)
   async update(
     @Param('id', ParseMongoIdPipe) id: string,
@@ -118,7 +114,6 @@ export class CodeController {
 
   @ApiOperation({ summary: 'Update many codes by eventId' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Patch(routesV1.code.updateByEventId)
   async updateByEventId(
     @Param('eventId', ParseMongoIdPipe) eventId: string,
@@ -140,7 +135,6 @@ export class CodeController {
 
   @ApiOperation({ summary: 'Delete code by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Delete(routesV1.code.delete)
   async delete(@Param('id', ParseMongoIdPipe) id: string): Promise<void> {
     this.codeService.delete(id);

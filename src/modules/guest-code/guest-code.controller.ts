@@ -16,13 +16,13 @@ import { ResponseGuestCodeDto } from './dto/response-guest-code.dto';
 
 @ApiTags(`/${routesV1.guestCode.root}`)
 @ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @Controller({ version: routesV1.version })
 export class GuestCodeController {
   constructor(private guestCodeService: GuestCodeService) {}
 
   @ApiOperation({ summary: 'Create a record of a code to an event' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Post(routesV1.guestCode.create)
   async register(
     @Body() createGuestCodeDto: CreateGuestCodeDto,
