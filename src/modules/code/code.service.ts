@@ -67,7 +67,7 @@ export class CodeService {
     }
 
     const codes = Array.from({ length: amount }).map(() => ({
-      uuid: uuidV4(),
+      uuid: uuidV4().substring(0, 8),
       type,
       eventId,
     }));
