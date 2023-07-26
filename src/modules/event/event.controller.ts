@@ -36,6 +36,8 @@ import { PaginatedResponseEventDto } from './dto/paginated-response-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 
 @ApiTags(`/${routesV1.event.root}`)
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @Controller({ version: routesV1.version })
 export class EventController {
   constructor(private eventService: EventService) {}
@@ -43,8 +45,6 @@ export class EventController {
   @ApiOperation({ summary: 'Create a event' })
   @ApiOkResponse({ type: ResponseEventDto })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
   @Post(routesV1.event.create)
   async create(@Body() createEventDto: CreateEventDto) {
     return this.eventService.create(createEventDto);
@@ -52,7 +52,6 @@ export class EventController {
 
   @ApiOperation({ summary: 'List events' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.event.root)
   async list(
     @Body() requestUserDto: RequestEventDto,
@@ -76,7 +75,6 @@ export class EventController {
     summary: 'List events with search value by: name, address, city, host',
   })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.event.findWithSearch)
   async listWithSearch(
     @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
@@ -98,7 +96,6 @@ export class EventController {
 
   @ApiOperation({ summary: 'Find event by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Get(routesV1.event.findById)
   async findById(
     @Param('id', ParseMongoIdPipe) id: string,
@@ -108,7 +105,6 @@ export class EventController {
 
   @ApiOperation({ summary: 'Update event' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Patch(routesV1.event.update)
   async update(
     @Param('id', ParseMongoIdPipe) id: string,
@@ -123,7 +119,6 @@ export class EventController {
 
   @ApiOperation({ summary: 'Delete event by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @UseGuards(AuthGuard('jwt'))
   @Delete(routesV1.event.delete)
   async delete(@Param('id', ParseMongoIdPipe) id: string): Promise<void> {
     this.eventService.delete(id);
