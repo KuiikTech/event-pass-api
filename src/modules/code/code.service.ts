@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { v4 as uuidV4 } from 'uuid';
+import { generate } from 'short-uuid';
 import { PaginateModel } from 'mongoose';
 
 import {
@@ -67,7 +67,7 @@ export class CodeService {
     }
 
     const codes = Array.from({ length: amount }).map(() => ({
-      uuid: uuidV4(),
+      uuid: generate().substring(0, 8),
       type,
       eventId,
     }));

@@ -6,7 +6,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
+  // IsUUID,
 } from 'class-validator';
 
 import { CodeTypesType } from '../types/code-types.type';
@@ -19,7 +19,7 @@ export class CreateCodeDto {
   })
   @IsOptional()
   @IsString()
-  @IsUUID('4')
+  // @IsUUID('4')
   readonly uuid?: string;
 
   @ApiProperty({
