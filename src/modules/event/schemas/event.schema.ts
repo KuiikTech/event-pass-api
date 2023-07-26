@@ -5,7 +5,9 @@ import { EventStatusType } from '../types/event-status.type';
 
 export const EventModelName = 'Event';
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
 export class EventModel extends Document {
   @Prop({ type: String, required: true })
   name: string;
