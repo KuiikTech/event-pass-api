@@ -30,7 +30,7 @@ import { RequestUserDto } from './dto/request-user.dto';
 import { PaginatedResponseUserDto } from './dto/paginated-response-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-@ApiTags(`/${routesV1.user.create}`)
+@ApiTags(`/${routesV1.user.root}`)
 @ApiBearerAuth()
 @Controller({ version: routesV1.version })
 export class UserController {

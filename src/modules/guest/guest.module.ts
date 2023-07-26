@@ -16,5 +16,6 @@ import { GuestModelName, GuestSchema } from './schemas/guest.schema';
   ],
   providers: [GuestService],
   controllers: [GuestController],
+  exports: [GuestService],
 })
 export class GuestModule {}

@@ -5,6 +5,7 @@ const userRoot = 'user';
 const guestRoot = 'guest';
 const eventRoot = 'event';
 const codeRoot = 'code';
+const guestCodeRoot = 'guest-code';
 
 // Api versions
 const v1 = 'v1';
@@ -52,5 +53,9 @@ export const routesV1 = {
     findById: `${codeRoot}/:id`,
     findByEventId: `${codeRoot}/event/:eventId`,
     delete: `${codeRoot}/:id`,
+  },
+  guestCode: {
+    root: guestCodeRoot,
+    create: guestCodeRoot,
   },
 };
