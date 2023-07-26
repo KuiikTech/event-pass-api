@@ -19,5 +19,6 @@ import { CodeController } from './code.controller';
   ],
   providers: [CodeService],
   controllers: [CodeController],
+  exports: [CodeService],
 })
 export class CodeModule {}

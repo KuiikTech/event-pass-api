@@ -1,0 +1,49 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsIn, IsMongoId, IsNotEmpty, IsOptional } from 'class-validator';
+import { GuestCodeStatusType } from '../types/guest-code-status.type';
+
+export class CreateGuestCodeDto {
+  @ApiProperty({
+    example: '64b74abdb8d0fb6b13b4f299',
+    description: 'event id to link code registration',
+  })
+  @IsNotEmpty()
+  @IsMongoId()
+  readonly eventId: string;
+
+  @ApiProperty({
+    example: '64b74abdb8d0fb6b13b4f299',
+    description: 'guest id to link code registration',
+  })
+  @IsNotEmpty()
+  @IsMongoId()
+  readonly guestId: string;
+
+  @ApiProperty({
+    example: '64b74abdb8d0fb6b13b4f299',
+    description: 'code id to link code registration',
+  })
+  @IsNotEmpty()
+  @IsMongoId()
+  readonly codeId: string;
+
+  @ApiProperty({
+    example: 50,
+    description: 'number of codes given to the guest',
+    default: 0,
+  })
+  @IsOptional()
+  @IsNotEmpty()
+  readonly initialAmount?: number;
+
+  @ApiProperty({
+    example: GuestCodeStatusType.ACTIVE,
+    description: `status of the GuestCode: ${Object.values(
+      GuestCodeStatusType,
+    ).join('||')}`,
+    default: GuestCodeStatusType.ACTIVE,
+  })
+  @IsOptional()
+  @IsIn(Object.values(GuestCodeStatusType))
+  readonly status?: GuestCodeStatusType;
+}
