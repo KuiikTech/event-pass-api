@@ -61,6 +61,7 @@ export class GuestService {
     }
     const createdGuest = new this.guestModel(createGuestDto);
     await createdGuest.save();
+    return this.sanitize(createdGuest);
   }
 
   async find(
