@@ -73,11 +73,17 @@ export class CodeService {
       );
     }
 
-    const codes = Array.from({ length: amount }).map(() => ({
-      uuid: uuidV4().substring(0, 8),
-      type,
-      eventId,
-    }));
+    const codes = Array.from({ length: amount }).map(() => {
+      const hash = uuidV4();
+      return {
+        uuid:
+          type === CodeTypesType.QR
+            ? hash.substring(0, 8)
+            : parseInt(hash, 32).toString().substring(0, 8),
+        type,
+        eventId,
+      };
+    });
 
     return (await this.codeModel.insertMany(codes)).map((code) =>
       this.sanitize(code),
