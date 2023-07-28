@@ -58,5 +58,7 @@ export const routesV1 = {
   guestCode: {
     root: guestCodeRoot,
     create: guestCodeRoot,
+    update: `${guestCodeRoot}/:id`,
+    updateByUuid: `${guestCodeRoot}/uuid/:uuid`,
   },
 };
