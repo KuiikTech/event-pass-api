@@ -133,7 +133,6 @@ export class CodeService {
       FilterToFindFactory.createFilterWithSearch({
         uuid: `.*${findCodeQuery.uuid}.*`,
         type: `.*${findCodeQuery.type}.*`,
-        eventId: `.*${findCodeQuery.eventId}.*`,
       });
     return this.find(searchCriteria, {
       ...findCodeQuery,

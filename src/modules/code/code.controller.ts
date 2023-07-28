@@ -22,6 +22,7 @@ import { routesV1 } from 'src/app.routes';
 import { ErrorResponse } from 'src/libs/api/responses/error.response';
 import { ParseMongoIdPipe } from 'src/libs/application/pipes/parse-mongo-id.pipe';
 import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
+import { PaginatedQueryWithSearchDto } from 'src/libs/api/dto/paginated-query-with-search.dto';
 
 import { ResponseCodeDto } from './dto/response-code.dto';
 import { CreateManyCodesDto } from './dto/create-many-codes.dto';
@@ -46,6 +47,27 @@ export class CodeController {
     @Body() createManyCodesDto: CreateManyCodesDto,
   ): Promise<ResponseCodeDto[]> {
     return this.codeService.createMany(createManyCodesDto);
+  }
+
+  @ApiOperation({
+    summary: 'List codes with search value by: uuid, type',
+  })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @Get(routesV1.code.findWithSearch)
+  async listWithSearch(
+    @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
+  ): Promise<PaginatedResponseCodeDto> {
+    const query = new FindCodeQuery({
+      ...paginatedQueryWithSearchDto,
+      uuid: paginatedQueryWithSearchDto.search,
+      type: paginatedQueryWithSearchDto.search,
+    });
+
+    const paginated = await this.codeService.findWithSearch(query);
+
+    return new PaginatedResponseCodeDto({
+      ...paginated,
+    });
   }
 
   @ApiOperation({ summary: 'Find code by id' })
