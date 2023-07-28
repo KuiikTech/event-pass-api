@@ -13,6 +13,7 @@ import {
 import * as mongoosePaginate from 'mongoose-paginate-v2';
 import * as mongooseUniqueValidator from 'mongoose-unique-validator';
 import * as mongooseValidationErrorTransform from 'mongoose-validation-error-transform';
+import { MongooseFindByReference } from 'mongoose-find-by-reference';
 import { v4 as uuidV4 } from 'uuid';
 
 import { AppController } from './app.controller';
@@ -39,6 +40,7 @@ import 'reflect-metadata';
     MongooseModule.forRoot(process.env.MONGO_URI, {
       ignoreUndefined: true,
       connectionFactory: (connection) => {
+        connection.plugin(MongooseFindByReference);
         connection.plugin(mongoosePaginate);
         connection.plugin(mongooseUniqueValidator);
         connection.plugin(mongooseValidationErrorTransform, {

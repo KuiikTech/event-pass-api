@@ -17,13 +17,20 @@ import { EventService } from '../event/event.service';
 import { CodeStatusType } from './types/code-status.type';
 import { CodeTypesType } from './types/code-types.type';
 
+interface FindCodeQueryProps {
+  uuid?: string;
+  type?: string;
+  eventId?: string;
+  status?: string;
+}
+
 export class FindCodeQuery extends PaginatedQueryBase {
   readonly uuid?: string;
   readonly type?: string;
   readonly eventId?: string;
   readonly status?: string;
 
-  constructor(props: PaginatedParams<FindCodeQuery>) {
+  constructor(props: PaginatedParams<FindCodeQueryProps>) {
     super(props);
     this.uuid = props.uuid;
     this.type = props.type;
@@ -105,6 +112,10 @@ export class CodeService {
       limit: result.limit,
       page: result.page,
     });
+  }
+
+  async findOne(findCodeQuery: FindCodeQueryProps) {
+    return this.codeModel.findOne(findCodeQuery);
   }
 
   async findByEventId(findCodeQuery: FindCodeQuery) {
