@@ -3,26 +3,34 @@ import { InjectModel } from '@nestjs/mongoose';
 import { PaginateModel } from 'mongoose';
 
 import { CustomValidationException } from 'src/libs/exceptions/http.exception';
+import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
 
 import {
   GuestCodeModel,
-  GuestCodeModelName,
+  GUEST_CODE_MODEL_NAME,
 } from './schemas/guest-code.schema';
 import { CreateGuestCodeDto } from './dto/create-guest-code.dto';
 import { EventService } from '../event/event.service';
 import { GuestService } from '../guest/guest.service';
 import { CodeService } from '../code/code.service';
 import { GuestCodeStatusType } from './types/guest-code-status.type';
+import {
+  FilterToFindFactory,
+  FilterToFindWithSearch,
+  Paginated,
+  SearchFilters,
+} from 'src/libs/ports/repository.port';
 
-export class PartialUpdateGuestCode {
+export class FindGuestCodeQuery extends PaginatedQueryBase {
   readonly eventId?: string;
   readonly guestId?: string;
   readonly codeId?: string;
   readonly initialAmount?: number;
   readonly count?: number;
-  readonly status?: GuestCodeStatusType;
+  readonly status?: string;
 
-  constructor(props: PartialUpdateGuestCode) {
+  constructor(props: PaginatedParams<FindGuestCodeQuery>) {
+    super(props);
     this.eventId = props.eventId;
     this.guestId = props.guestId;
     this.codeId = props.codeId;
@@ -32,10 +40,19 @@ export class PartialUpdateGuestCode {
   }
 }
 
+export class PartialUpdateGuestCode {
+  eventId?: string;
+  guestId?: string;
+  codeId?: string;
+  initialAmount?: number;
+  count?: number;
+  status?: GuestCodeStatusType;
+}
+
 @Injectable()
 export class GuestCodeService {
   constructor(
-    @InjectModel(GuestCodeModelName)
+    @InjectModel(GUEST_CODE_MODEL_NAME)
     private guestCodeModel: PaginateModel<GuestCodeModel>,
     private eventService: EventService,
     private guestService: GuestService,
@@ -71,23 +88,8 @@ export class GuestCodeService {
     return this.sanitize(createdUser);
   }
 
-  async update(
-    idOrUuid: string,
-    partialUpdateGuestCode: PartialUpdateGuestCode,
-    searchById = true,
-  ) {
-    let query;
-    if (!searchById) {
-      const code = await this.codeService.findOne({
-        uuid: idOrUuid,
-      });
-      query = { codeId: code._id };
-    }
-    console.log(!query ? { _id: idOrUuid } : query);
-    console.log(!!query ? { _id: idOrUuid } : query);
-    const guestCode = await this.guestCodeModel.findOne(
-      !query ? { _id: idOrUuid } : query,
-    );
+  async updateById(id: string, partialUpdateGuestCode: PartialUpdateGuestCode) {
+    const guestCode = await this.guestCodeModel.findById(id);
     if (!guestCode) {
       throw new HttpException(
         'Guest code does not exist',
@@ -95,36 +97,83 @@ export class GuestCodeService {
       );
     }
 
-    const { eventId, guestId, codeId, initialAmount, count, status } =
-      partialUpdateGuestCode;
-
-    guestCode.eventId = eventId ?? guestCode.eventId;
-    guestCode.guestId = guestId ?? guestCode.guestId;
-    guestCode.codeId = codeId ?? guestCode.codeId;
-    guestCode.initialAmount = initialAmount ?? guestCode.initialAmount;
-    guestCode.count = count ?? guestCode.count;
-    guestCode.status = status ?? guestCode.status;
+    guestCode.set({
+      ...partialUpdateGuestCode,
+    });
 
     const updatedGuestCode = await this.guestCodeModel.findByIdAndUpdate(
-      guestCode._id,
+      id,
       guestCode,
       { new: true },
     );
     return this.sanitize(updatedGuestCode);
   }
 
-  updatedGuestCodeById(
-    id: string,
-    partialUpdateGuestCode: PartialUpdateGuestCode,
-  ) {
-    return this.update(id, partialUpdateGuestCode);
-  }
-
-  updatedGuestCodeByUuid(
+  async updateByUuid(
     uuid: string,
     partialUpdateGuestCode: PartialUpdateGuestCode,
   ) {
-    return this.update(uuid, partialUpdateGuestCode, false);
+    const code = await this.codeService.findOne({ uuid });
+    if (!code) {
+      throw new HttpException('Code does not exist', HttpStatus.NOT_FOUND);
+    }
+
+    const guestCode = await this.guestCodeModel.findOne({ codeId: code.id });
+    if (!guestCode) {
+      throw new HttpException(
+        'Guest code does not exist',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    guestCode.set({
+      ...partialUpdateGuestCode,
+    });
+
+    const updatedGuestCode = await this.guestCodeModel.findByIdAndUpdate(
+      guestCode.id,
+      guestCode,
+      { new: true },
+    );
+    return this.sanitize(updatedGuestCode);
+  }
+
+  async find(
+    filters: SearchFilters | FilterToFindWithSearch,
+    paginatedQueryBase: PaginatedQueryBase,
+  ) {
+    const result = await this.guestCodeModel.paginate(
+      { ...filters },
+      {
+        limit: paginatedQueryBase.limit,
+        offset: paginatedQueryBase.offset,
+        page: paginatedQueryBase.page,
+        sort: paginatedQueryBase.orderBy,
+      },
+    );
+
+    return new Paginated({
+      data: result.docs.map((user) => this.sanitize(user)),
+      count: result.totalDocs,
+      limit: result.limit,
+      page: result.page,
+    });
+  }
+
+  async searchExact(findGuestCodeQuery: FindGuestCodeQuery) {
+    return this.find({ ...findGuestCodeQuery }, { ...findGuestCodeQuery });
+  }
+
+  async search(findGuestCodeQuery: FindGuestCodeQuery) {
+    const searchCriteria: FilterToFindWithSearch =
+      FilterToFindFactory.createFilterWithSearch({
+        eventId: `.*${findGuestCodeQuery.eventId}.*`,
+        guestId: `.*${findGuestCodeQuery.guestId}.*`,
+        codeId: `.*${findGuestCodeQuery.codeId}.*`,
+      });
+    return this.find(searchCriteria, {
+      ...findGuestCodeQuery,
+    });
   }
 
   private sanitize(guestCode: GuestCodeModel) {

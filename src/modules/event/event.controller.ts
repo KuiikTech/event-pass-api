@@ -64,7 +64,7 @@ export class EventController {
       orderBy: paginatedQueryDto?.orderBy,
     });
 
-    const paginated = await this.eventService.findWithExact(query);
+    const paginated = await this.eventService.searchExact(query);
 
     return new PaginatedResponseEventDto({
       ...paginated,
@@ -75,7 +75,7 @@ export class EventController {
     summary: 'List events with search value by: name, address, city, host',
   })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @Get(routesV1.event.findWithSearch)
+  @Get(routesV1.event.search)
   async listWithSearch(
     @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
   ): Promise<PaginatedResponseEventDto> {
@@ -87,7 +87,7 @@ export class EventController {
       host: paginatedQueryWithSearchDto?.search,
     });
 
-    const paginated = await this.eventService.findWithSearch(query);
+    const paginated = await this.eventService.search(query);
 
     return new PaginatedResponseEventDto({
       ...paginated,
@@ -96,7 +96,7 @@ export class EventController {
 
   @ApiOperation({ summary: 'Find event by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @Get(routesV1.event.findById)
+  @Get(routesV1.event.searchById)
   async findById(
     @Param('id', ParseMongoIdPipe) id: string,
   ): Promise<ResponseEventDto> {

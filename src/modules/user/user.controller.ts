@@ -18,7 +18,6 @@ import {
 } from '@nestjs/swagger';
 
 import { routesV1 } from 'src/app.routes';
-import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
 import { ErrorResponse } from 'src/libs/api/responses/error.response';
 import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
 import { ParseMongoIdPipe } from 'src/libs/application/pipes/parse-mongo-id.pipe';
@@ -29,6 +28,7 @@ import { ResponseUserDto } from './dto/response-user.dto';
 import { RequestUserDto } from './dto/request-user.dto';
 import { PaginatedResponseUserDto } from './dto/paginated-response-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @ApiTags(`/${routesV1.user.root}`)
 @ApiBearerAuth()
@@ -40,7 +40,7 @@ export class UserController {
   @ApiOperation({ summary: 'Create a user' })
   @ApiBadRequestResponse({ type: ErrorResponse })
   @Post(routesV1.user.create)
-  async register(
+  async createUser(
     @Body() createUserDto: CreateUserDto,
   ): Promise<ResponseUserDto> {
     return this.userService.create(createUserDto);
@@ -49,7 +49,7 @@ export class UserController {
   @ApiOperation({ summary: 'List users' })
   @ApiBadRequestResponse({ type: ErrorResponse })
   @Get(routesV1.user.root)
-  async list(
+  async listUsers(
     @Body() requestUserDto: RequestUserDto,
     @Query() paginatedQueryDto: PaginatedQueryDto,
   ): Promise<PaginatedResponseUserDto> {
@@ -60,7 +60,7 @@ export class UserController {
       orderBy: paginatedQueryDto?.orderBy,
     });
 
-    const paginated = await this.userService.findWithExact(query);
+    const paginated = await this.userService.searchExact(query);
 
     return new PaginatedResponseUserDto({
       ...paginated,
@@ -71,8 +71,8 @@ export class UserController {
     summary: 'List users with search value by: firstName, lastName, email',
   })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @Get(routesV1.user.findWithSearch)
-  async listWithSearch(
+  @Get(routesV1.user.search)
+  async listUsersWithSearch(
     @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
   ): Promise<PaginatedResponseUserDto> {
     const query = new FindUserQuery({
@@ -82,7 +82,7 @@ export class UserController {
       email: paginatedQueryWithSearchDto?.search,
     });
 
-    const paginated = await this.userService.findWithSearch(query);
+    const paginated = await this.userService.search(query);
 
     return new PaginatedResponseUserDto({
       ...paginated,
@@ -91,8 +91,8 @@ export class UserController {
 
   @ApiOperation({ summary: 'Find user by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @Get(routesV1.user.findById)
-  async findById(
+  @Get(routesV1.user.searchById)
+  async findUserById(
     @Param('id', ParseMongoIdPipe) id: string,
   ): Promise<ResponseUserDto> {
     return this.userService.findById(id);
@@ -101,7 +101,7 @@ export class UserController {
   @ApiOperation({ summary: 'Update user' })
   @ApiBadRequestResponse({ type: ErrorResponse })
   @Patch(routesV1.user.update)
-  async update(
+  async updateUser(
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<ResponseUserDto> {
@@ -115,7 +115,7 @@ export class UserController {
   @ApiOperation({ summary: 'Delete user by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
   @Delete(routesV1.user.delete)
-  async delete(@Param('id', ParseMongoIdPipe) id: string): Promise<void> {
-    this.userService.delete(id);
+  async deleteUser(@Param('id', ParseMongoIdPipe) id: string): Promise<void> {
+    await this.userService.delete(id);
   }
 }

@@ -14,7 +14,7 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const user: UserModel = await this.userService.findByLogin(loginDto);
     const payload = {
-      id: user._id,
+      id: user.id,
     };
     const token = await this.signPayload(payload);
     return { user, token };

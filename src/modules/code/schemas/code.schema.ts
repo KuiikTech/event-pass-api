@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, SchemaTypes } from 'mongoose';
 
-import { EventModelName } from 'src/modules/event/schemas/event.schema';
+import { EVENT_MODEL_NAME } from 'src/modules/event/schemas/event.schema';
 
 import { CodeTypesType } from '../types/code-types.type';
 import { CodeStatusType } from '../types/code-status.type';
 
-export const CodeModelName = 'Code';
+export const CODE_MODEL_NAME = 'Code';
 
 @Schema({
   timestamps: true,
@@ -28,7 +28,7 @@ export class CodeModel extends Document {
 
   @Prop({
     type: SchemaTypes.ObjectId,
-    ref: EventModelName,
+    ref: EVENT_MODEL_NAME,
     required: true,
   })
   eventId: string;

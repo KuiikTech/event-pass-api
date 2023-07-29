@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import {
-  UserModelName,
+  USER_MODEL_NAME,
   UserSchema,
 } from 'src/modules/user/schemas/user.schema';
 
@@ -13,7 +13,7 @@ import { UserController } from './user.controller';
   imports: [
     MongooseModule.forFeature([
       {
-        name: UserModelName,
+        name: USER_MODEL_NAME,
         schema: UserSchema,
       },
     ]),

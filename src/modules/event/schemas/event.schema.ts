@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 import { EventStatusType } from '../types/event-status.type';
 
-export const EventModelName = 'Event';
+export const EVENT_MODEL_NAME = 'Event';
 
 @Schema({
   timestamps: true,

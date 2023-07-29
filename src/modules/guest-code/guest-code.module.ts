@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import {
-  GuestCodeModelName,
+  GUEST_CODE_MODEL_NAME,
   GuestCodeSchema,
 } from './schemas/guest-code.schema';
 import { GuestCodeService } from './guest-code.service';
@@ -15,7 +15,7 @@ import { GuestCodeController } from './guest-code.controller';
   imports: [
     MongooseModule.forFeature([
       {
-        name: GuestCodeModelName,
+        name: GUEST_CODE_MODEL_NAME,
         schema: GuestCodeSchema,
       },
     ]),
