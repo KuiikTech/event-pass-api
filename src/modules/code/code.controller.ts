@@ -79,6 +79,13 @@ export class CodeController {
     return this.codeService.findById(id);
   }
 
+  @ApiOperation({ summary: 'Find code by uuid' })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @Get(routesV1.code.findByUuid)
+  async findByUuid(@Param('uuid') uuid: string): Promise<ResponseCodeDto> {
+    return this.codeService.findByUuid(uuid);
+  }
+
   @ApiOperation({ summary: 'Find codes by event id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
   @Get(routesV1.code.findByEventId)

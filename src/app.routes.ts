@@ -54,6 +54,7 @@ export const routesV1 = {
     findByEventId: `${codeRoot}/event/:eventId`,
     delete: `${codeRoot}/:id`,
     findWithSearch: `${codeRoot}/search`,
+    findByUuid: `${codeRoot}/uuid/:uuid`,
   },
   guestCode: {
     root: guestCodeRoot,
