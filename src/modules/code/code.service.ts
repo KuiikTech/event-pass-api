@@ -98,6 +98,14 @@ export class CodeService {
     return this.sanitize(code);
   }
 
+  async findByUuid(uuid: string) {
+    const code = await this.codeModel.findOne({ uuid });
+    if (!code) {
+      throw new HttpException('code doesnt exists', HttpStatus.BAD_REQUEST);
+    }
+    return this.sanitize(code);
+  }
+
   async find(
     filters: SearchFilters | FilterToFindWithSearch,
     paginatedQueryBase: PaginatedQueryBase,
