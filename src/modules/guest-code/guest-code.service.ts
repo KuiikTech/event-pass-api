@@ -146,6 +146,11 @@ export class GuestCodeService {
     const result = await this.guestCodeModel.paginate(
       { ...filters },
       {
+        populate: [
+          { path: 'guestId' },
+          { path: 'codeId' },
+          { path: 'eventId' },
+        ],
         limit: paginatedQueryBase.limit,
         offset: paginatedQueryBase.offset,
         page: paginatedQueryBase.page,
