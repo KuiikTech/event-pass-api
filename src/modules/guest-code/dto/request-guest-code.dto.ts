@@ -47,6 +47,16 @@ export class RequestGuestCodeDto {
   readonly initialAmount?: number;
 
   @ApiProperty({
+    example: 50,
+    description: 'number of codes given to the guest',
+    default: 0,
+  })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsInt()
+  readonly count?: number;
+
+  @ApiProperty({
     example: GuestCodeStatusType.ACTIVE,
     description: `status of the GuestCode: ${Object.values(
       GuestCodeStatusType,

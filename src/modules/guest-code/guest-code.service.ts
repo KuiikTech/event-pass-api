@@ -161,7 +161,17 @@ export class GuestCodeService {
   }
 
   async searchExact(findGuestCodeQuery: FindGuestCodeQuery) {
-    return this.find({ ...findGuestCodeQuery }, { ...findGuestCodeQuery });
+    return this.find(
+      {
+        eventId: findGuestCodeQuery.eventId,
+        guestId: findGuestCodeQuery.guestId,
+        codeId: findGuestCodeQuery.codeId,
+        initialAmount: findGuestCodeQuery.initialAmount,
+        count: findGuestCodeQuery.count,
+        status: findGuestCodeQuery.status,
+      },
+      { ...findGuestCodeQuery },
+    );
   }
 
   async search(findGuestCodeQuery: FindGuestCodeQuery) {
