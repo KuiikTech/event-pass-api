@@ -10,7 +10,7 @@ import {
   SearchFilters,
 } from 'src/libs/ports/repository.port';
 
-import { EventModel, EventModelName } from './schemas/event.schema';
+import { EventModel, EVENT_MODEL_NAME } from './schemas/event.schema';
 import { CreateEventDto } from './dto/create-event.dto';
 import { EventStatusType } from './types/event-status.type';
 
@@ -62,7 +62,8 @@ export class PartialUpdateEvent {
 @Injectable()
 export class EventService {
   constructor(
-    @InjectModel(EventModelName) private eventModel: PaginateModel<EventModel>,
+    @InjectModel(EVENT_MODEL_NAME)
+    private eventModel: PaginateModel<EventModel>,
   ) {}
 
   async create(createEventDto: CreateEventDto) {
@@ -94,7 +95,7 @@ export class EventService {
     });
   }
 
-  async findWithExact(findEventQuery: FindEventQuery) {
+  async searchExact(findEventQuery: FindEventQuery) {
     return this.find(
       {
         name: findEventQuery.name,
@@ -109,7 +110,7 @@ export class EventService {
     );
   }
 
-  async findWithSearch(findEventQuery: FindEventQuery) {
+  async search(findEventQuery: FindEventQuery) {
     const searchCriteria: FilterToFindWithSearch =
       FilterToFindFactory.createFilterWithSearch({
         name: `.*${findEventQuery.name}.*`,
@@ -136,15 +137,9 @@ export class EventService {
       throw new HttpException('event doesnt exists', HttpStatus.NOT_FOUND);
     }
 
-    event.name = partialUpdateEvent.name ?? event.name;
-    event.description = partialUpdateEvent.description ?? event.description;
-    event.address = partialUpdateEvent.address ?? event.address;
-    event.city = partialUpdateEvent.city ?? event.city;
-    event.initialDate = partialUpdateEvent.initialDate ?? event.initialDate;
-    event.finalDate = partialUpdateEvent.finalDate ?? event.finalDate;
-    event.host = partialUpdateEvent.host ?? event.host;
-    event.guestRoles = partialUpdateEvent.guestRoles ?? event.guestRoles;
-    event.status = partialUpdateEvent.status ?? event.status;
+    event.set({
+      ...partialUpdateEvent,
+    });
 
     const updatedEvent = await this.eventModel.findByIdAndUpdate(id, event, {
       new: true,

@@ -25,7 +25,7 @@ import { PaginatedQueryDto } from 'src/libs/api/dto/paginated-query.dto';
 
 import { ResponseCodeDto } from './dto/response-code.dto';
 import { CreateManyCodesDto } from './dto/create-many-codes.dto';
-import { CodeService, FindCodeQuery, PartialUpdateCode } from './code.service';
+import { CodeService, FindCodeQuery } from './code.service';
 import { RequestCodeDto } from './dto/request-code.dto';
 import { PaginatedResponseCodeDto } from './dto/paginated-response-user.dto';
 import { UpdateCodeDto } from './dto/update-code.dto';
@@ -50,7 +50,7 @@ export class CodeController {
 
   @ApiOperation({ summary: 'Find code by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @Get(routesV1.code.findById)
+  @Get(routesV1.code.searchById)
   async findById(
     @Param('id', ParseMongoIdPipe) id: string,
   ): Promise<ResponseCodeDto> {
@@ -59,7 +59,7 @@ export class CodeController {
 
   @ApiOperation({ summary: 'Find codes by event id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @Get(routesV1.code.findByEventId)
+  @Get(routesV1.code.searchByEventId)
   async findByEventId(
     @Param('eventId', ParseMongoIdPipe) eventId: string,
     @Query() paginatedQueryDto: PaginatedQueryDto,
@@ -91,7 +91,7 @@ export class CodeController {
       orderBy: paginatedQueryDto?.orderBy,
     });
 
-    const paginated = await this.codeService.findWithExact(query);
+    const paginated = await this.codeService.searchExact(query);
 
     return new PaginatedResponseCodeDto({
       ...paginated,
@@ -105,11 +105,7 @@ export class CodeController {
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() updateCodeDto: UpdateCodeDto,
   ): Promise<ResponseCodeDto> {
-    const partialUpdateCode = new PartialUpdateCode({
-      ...updateCodeDto,
-    });
-
-    return this.codeService.update(id, partialUpdateCode);
+    return this.codeService.update(id, { ...updateCodeDto });
   }
 
   @ApiOperation({ summary: 'Update many codes by eventId' })
@@ -119,14 +115,9 @@ export class CodeController {
     @Param('eventId', ParseMongoIdPipe) eventId: string,
     @Body() updateCodeDto: UpdateCodeDto,
   ): Promise<ResponseUpdateManyCodesDto> {
-    const partialUpdateCode = new PartialUpdateCode({
+    const modifiedCount = await this.codeService.updateByEventId(eventId, {
       ...updateCodeDto,
     });
-
-    const modifiedCount = await this.codeService.updateByEventId(
-      eventId,
-      partialUpdateCode,
-    );
 
     return {
       modifiedCount,

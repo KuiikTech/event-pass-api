@@ -11,7 +11,7 @@ import {
 } from 'src/libs/ports/repository.port';
 import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
 
-import { CodeModel, CodeModelName } from './schemas/code.schema';
+import { CodeModel, CODE_MODEL_NAME } from './schemas/code.schema';
 import { CreateManyCodesDto } from './dto/create-many-codes.dto';
 import { EventService } from '../event/event.service';
 import { CodeStatusType } from './types/code-status.type';
@@ -41,25 +41,15 @@ export class FindCodeQuery extends PaginatedQueryBase {
 
 export class PartialUpdateCode {
   readonly uuid?: string;
-
   readonly type?: CodeTypesType;
-
   readonly eventId?: string;
-
   readonly status?: CodeStatusType;
-
-  constructor(props: PartialUpdateCode) {
-    this.uuid = props.uuid;
-    this.type = props.type;
-    this.eventId = props.eventId;
-    this.status = props.status;
-  }
 }
 
 @Injectable()
 export class CodeService {
   constructor(
-    @InjectModel(CodeModelName) private codeModel: PaginateModel<CodeModel>,
+    @InjectModel(CODE_MODEL_NAME) private codeModel: PaginateModel<CodeModel>,
     private eventService: EventService,
   ) {}
 
@@ -127,7 +117,7 @@ export class CodeService {
     );
   }
 
-  async findWithExact(findCodeQuery: FindCodeQuery) {
+  async searchExact(findCodeQuery: FindCodeQuery) {
     return this.find(
       {
         uuid: findCodeQuery.uuid,
@@ -139,7 +129,7 @@ export class CodeService {
     );
   }
 
-  async findWithSearch(findCodeQuery: FindCodeQuery) {
+  async search(findCodeQuery: FindCodeQuery) {
     const searchCriteria: FilterToFindWithSearch =
       FilterToFindFactory.createFilterWithSearch({
         uuid: `.*${findCodeQuery.uuid}.*`,
@@ -152,17 +142,14 @@ export class CodeService {
   }
 
   async update(id: string, partialUpdateCode: PartialUpdateCode) {
-    const user = await this.codeModel.findById(id);
-    if (!user) {
+    const code = await this.codeModel.findById(id);
+    if (!code) {
       throw new HttpException('code doesnt exists', HttpStatus.NOT_FOUND);
     }
 
-    user.uuid = partialUpdateCode.uuid ?? user.uuid;
-    user.type = partialUpdateCode.type ?? user.type;
-    user.eventId = partialUpdateCode.eventId ?? user.eventId;
-    user.status = partialUpdateCode.status ?? user.status;
+    code.set({ ...partialUpdateCode });
 
-    const updatedUser = await this.codeModel.findByIdAndUpdate(id, user, {
+    const updatedUser = await this.codeModel.findByIdAndUpdate(id, code, {
       new: true,
     });
     return this.sanitize(updatedUser);

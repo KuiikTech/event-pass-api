@@ -27,6 +27,7 @@ import { GuestModule } from './modules/guest/guest.module';
 import { EventModule } from './modules/event/event.module';
 import { CodeModule } from './modules/code/code.module';
 import { GuestCodeModule } from './modules/guest-code/guest-code.module';
+import { GlobalVirtualFields } from './libs/ports/global-virtuals-fields.plugin';
 
 import 'reflect-metadata';
 
@@ -40,8 +41,9 @@ import 'reflect-metadata';
     MongooseModule.forRoot(process.env.MONGO_URI, {
       ignoreUndefined: true,
       connectionFactory: (connection) => {
-        connection.plugin(MongooseFindByReference);
         connection.plugin(mongoosePaginate);
+        connection.plugin(GlobalVirtualFields);
+        connection.plugin(MongooseFindByReference);
         connection.plugin(mongooseUniqueValidator);
         connection.plugin(mongooseValidationErrorTransform, {
           humanize: false,

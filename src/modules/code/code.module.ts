@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { CodeService } from './code.service';
-import { CodeModelName, CodeSchema } from './schemas/code.schema';
+import { CODE_MODEL_NAME, CodeSchema } from './schemas/code.schema';
 
 import { EventModule } from '../event/event.module';
 import { CodeController } from './code.controller';
@@ -11,7 +11,7 @@ import { CodeController } from './code.controller';
   imports: [
     MongooseModule.forFeature([
       {
-        name: CodeModelName,
+        name: CODE_MODEL_NAME,
         schema: CodeSchema,
       },
     ]),

@@ -11,7 +11,7 @@ import {
 } from 'src/libs/ports/repository.port';
 
 import { CreateGuestDto } from './dto/create-guest.dto';
-import { GuestModelName, GuestModel } from './schemas/guest.schema';
+import { GUEST_MODEL_NAME, GuestModel } from './schemas/guest.schema';
 import { GuestStatusType } from './types/guest-status.type';
 
 export class FindGuestQuery extends PaginatedQueryBase {
@@ -50,7 +50,8 @@ export class PartialUpdateGuest {
 @Injectable()
 export class GuestService {
   constructor(
-    @InjectModel(GuestModelName) private guestModel: PaginateModel<GuestModel>,
+    @InjectModel(GUEST_MODEL_NAME)
+    private guestModel: PaginateModel<GuestModel>,
   ) {}
 
   async create(createGuestDto: CreateGuestDto) {
@@ -86,7 +87,7 @@ export class GuestService {
     });
   }
 
-  async findWithExact(findGuestQuery: FindGuestQuery) {
+  async searchExact(findGuestQuery: FindGuestQuery) {
     return this.find(
       {
         firstName: findGuestQuery.firstName,
@@ -98,7 +99,7 @@ export class GuestService {
     );
   }
 
-  async findWithSearch(findGuestQuery: FindGuestQuery) {
+  async search(findGuestQuery: FindGuestQuery) {
     const searchCriteria: FilterToFindWithSearch =
       FilterToFindFactory.createFilterWithSearch({
         firstName: `.*${findGuestQuery.firstName}.*`,
@@ -124,13 +125,7 @@ export class GuestService {
       throw new HttpException('guest doesnt exists', HttpStatus.NOT_FOUND);
     }
 
-    guest.firstName = partialUpdateGuest.firstName ?? guest.firstName;
-    guest.lastName = partialUpdateGuest.lastName ?? guest.lastName;
-    guest.phone = partialUpdateGuest.phone ?? guest.phone;
-    guest.email = partialUpdateGuest.email ?? guest.email;
-    guest.documentNumber =
-      partialUpdateGuest.documentNumber ?? guest.documentNumber;
-    guest.status = partialUpdateGuest.status ?? guest.status;
+    guest.set({ ...partialUpdateGuest });
 
     const updatedGuest = await this.guestModel.findByIdAndUpdate(id, guest, {
       new: true,

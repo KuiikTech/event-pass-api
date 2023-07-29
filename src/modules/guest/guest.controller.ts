@@ -64,7 +64,7 @@ export class GuestController {
       orderBy: paginatedQueryDto?.orderBy,
     });
 
-    const paginated = await this.guestService.findWithExact(query);
+    const paginated = await this.guestService.searchExact(query);
 
     return new PaginatedResponseGuestDto({
       ...paginated,
@@ -76,7 +76,7 @@ export class GuestController {
       'List guests with search value by: firstName, lastName, documentNumber',
   })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @Get(routesV1.guest.findWithSearch)
+  @Get(routesV1.guest.search)
   async listWithSearch(
     @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
   ): Promise<PaginatedResponseGuestDto> {
@@ -87,7 +87,7 @@ export class GuestController {
       documentNumber: paginatedQueryWithSearchDto?.search,
     });
 
-    const paginated = await this.guestService.findWithSearch(query);
+    const paginated = await this.guestService.search(query);
 
     return new PaginatedResponseGuestDto({
       ...paginated,
@@ -96,7 +96,7 @@ export class GuestController {
 
   @ApiOperation({ summary: 'Find guest by id' })
   @ApiBadRequestResponse({ type: ErrorResponse })
-  @Get(routesV1.guest.findById)
+  @Get(routesV1.guest.searchById)
   async findById(
     @Param('id', ParseMongoIdPipe) id: string,
   ): Promise<ResponseGuestDto> {

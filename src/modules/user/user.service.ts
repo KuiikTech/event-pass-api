@@ -14,7 +14,7 @@ import {
   Paginated,
 } from 'src/libs/ports/repository.port';
 
-import { UserModelName, UserModel } from './schemas/user.schema';
+import { USER_MODEL_NAME, UserModel } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserStatusType } from './types/user-status.type';
 
@@ -62,7 +62,7 @@ export class PartialUpdateUser {
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(UserModelName) private userModel: PaginateModel<UserModel>,
+    @InjectModel(USER_MODEL_NAME) private userModel: PaginateModel<UserModel>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -137,7 +137,7 @@ export class UserService {
     });
   }
 
-  async findWithExact(findUserQuery: FindUserQuery) {
+  async searchExact(findUserQuery: FindUserQuery) {
     return this.find(
       {
         firstName: findUserQuery.firstName,
@@ -149,7 +149,7 @@ export class UserService {
     );
   }
 
-  async findWithSearch(findUserQuery: FindUserQuery) {
+  async search(findUserQuery: FindUserQuery) {
     const searchCriteria: FilterToFindWithSearch =
       FilterToFindFactory.createFilterWithSearch({
         firstName: `.*${findUserQuery.firstName}.*`,
@@ -175,13 +175,7 @@ export class UserService {
       throw new HttpException('user doesnt exists', HttpStatus.NOT_FOUND);
     }
 
-    user.firstName = partialUpdateUser.firstName ?? user.firstName;
-    user.lastName = partialUpdateUser.lastName ?? user.lastName;
-    user.phone = partialUpdateUser.phone ?? user.phone;
-    user.email = partialUpdateUser.email ?? user.email;
-    user.password = partialUpdateUser.password ?? user.password;
-    user.roles = partialUpdateUser.roles ?? user.roles;
-    user.status = partialUpdateUser.status ?? user.status;
+    user.set({ ...partialUpdateUser });
 
     const updatedUser = await this.userModel.findByIdAndUpdate(id, user, {
       new: true,
