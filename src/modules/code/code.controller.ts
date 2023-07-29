@@ -54,7 +54,7 @@ export class CodeController {
   })
   @ApiBadRequestResponse({ type: ErrorResponse })
   @Get(routesV1.code.findWithSearch)
-  async listWithSearch(
+  async list(
     @Query() paginatedQueryWithSearchDto: PaginatedQueryWithSearchDto,
   ): Promise<PaginatedResponseCodeDto> {
     const query = new FindCodeQuery({
@@ -63,7 +63,7 @@ export class CodeController {
       type: paginatedQueryWithSearchDto.search,
     });
 
-    const paginated = await this.codeService.findWithSearch(query);
+    const paginated = await this.codeService.search(query);
 
     return new PaginatedResponseCodeDto({
       ...paginated,
@@ -109,7 +109,7 @@ export class CodeController {
   @ApiOperation({ summary: 'List codes' })
   @ApiBadRequestResponse({ type: ErrorResponse })
   @Get(routesV1.code.root)
-  async list(
+  async listExact(
     @Body() requestCodeDto: RequestCodeDto,
     @Query() paginatedQueryDto: PaginatedQueryDto,
   ): Promise<PaginatedResponseCodeDto> {
