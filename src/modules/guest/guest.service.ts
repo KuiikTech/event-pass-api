@@ -6,7 +6,7 @@ import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
 import {
   SearchFilters,
   FilterToFindFactory,
-  FilterToFindWithSearch,
+  FilterToFindWithSearchRegex,
   Paginated,
 } from 'src/libs/ports/repository.port';
 
@@ -66,7 +66,7 @@ export class GuestService {
   }
 
   async find(
-    filters: SearchFilters | FilterToFindWithSearch,
+    filters: SearchFilters | FilterToFindWithSearchRegex,
     paginatedQueryBase: PaginatedQueryBase,
   ) {
     const result = await this.guestModel.paginate(
@@ -100,7 +100,7 @@ export class GuestService {
   }
 
   async search(findGuestQuery: FindGuestQuery) {
-    const searchCriteria: FilterToFindWithSearch =
+    const searchCriteria: FilterToFindWithSearchRegex =
       FilterToFindFactory.createFilterWithSearch({
         firstName: `.*${findGuestQuery.firstName}.*`,
         lastName: `.*${findGuestQuery.lastName}.*`,

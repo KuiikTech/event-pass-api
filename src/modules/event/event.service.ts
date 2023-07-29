@@ -5,7 +5,7 @@ import { PaginateModel } from 'mongoose';
 import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
 import {
   FilterToFindFactory,
-  FilterToFindWithSearch,
+  FilterToFindWithSearchRegex,
   Paginated,
   SearchFilters,
 } from 'src/libs/ports/repository.port';
@@ -74,7 +74,7 @@ export class EventService {
   }
 
   async find(
-    filters: SearchFilters | FilterToFindWithSearch,
+    filters: SearchFilters | FilterToFindWithSearchRegex,
     paginatedQueryBase: PaginatedQueryBase,
   ) {
     const result = await this.eventModel.paginate(
@@ -111,7 +111,7 @@ export class EventService {
   }
 
   async search(findEventQuery: FindEventQuery) {
-    const searchCriteria: FilterToFindWithSearch =
+    const searchCriteria: FilterToFindWithSearchRegex =
       FilterToFindFactory.createFilterWithSearch({
         name: `.*${findEventQuery.name}.*`,
         address: `.*${findEventQuery.address}.*`,

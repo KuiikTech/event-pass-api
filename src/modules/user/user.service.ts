@@ -9,7 +9,7 @@ import { RolesType } from 'src/modules/auth/types/roles.types';
 import { PaginatedParams, PaginatedQueryBase } from 'src/libs/ddd/query.base';
 import {
   SearchFilters,
-  FilterToFindWithSearch,
+  FilterToFindWithSearchRegex,
   FilterToFindFactory,
   Paginated,
 } from 'src/libs/ports/repository.port';
@@ -116,7 +116,7 @@ export class UserService {
   }
 
   async find(
-    filters: SearchFilters | FilterToFindWithSearch,
+    filters: SearchFilters | FilterToFindWithSearchRegex,
     paginatedQueryBase: PaginatedQueryBase,
   ) {
     const result = await this.userModel.paginate(
@@ -150,7 +150,7 @@ export class UserService {
   }
 
   async search(findUserQuery: FindUserQuery) {
-    const searchCriteria: FilterToFindWithSearch =
+    const searchCriteria: FilterToFindWithSearchRegex =
       FilterToFindFactory.createFilterWithSearch({
         firstName: `.*${findUserQuery.firstName}.*`,
         lastName: `.*${findUserQuery.lastName}.*`,
