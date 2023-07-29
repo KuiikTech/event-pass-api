@@ -15,8 +15,7 @@ import { GuestService } from '../guest/guest.service';
 import { CodeService } from '../code/code.service';
 import { GuestCodeStatusType } from './types/guest-code-status.type';
 import {
-  FilterToFindFactory,
-  FilterToFindWithSearch,
+  FilterToFindWithSearchRegex,
   Paginated,
   SearchFilters,
 } from 'src/libs/ports/repository.port';
@@ -139,9 +138,11 @@ export class GuestCodeService {
   }
 
   async find(
-    filters: SearchFilters | FilterToFindWithSearch,
+    filters: SearchFilters | FilterToFindWithSearchRegex,
     paginatedQueryBase: PaginatedQueryBase,
   ) {
+    console.log(JSON.stringify(filters));
+
     const result = await this.guestCodeModel.paginate(
       { ...filters },
       {
@@ -175,12 +176,13 @@ export class GuestCodeService {
   }
 
   async search(findGuestCodeQuery: FindGuestCodeQuery) {
-    const searchCriteria: FilterToFindWithSearch =
-      FilterToFindFactory.createFilterWithSearch({
-        eventId: `.*${findGuestCodeQuery.eventId}.*`,
-        guestId: `.*${findGuestCodeQuery.guestId}.*`,
-        codeId: `.*${findGuestCodeQuery.codeId}.*`,
-      });
+    const searchCriteria = {
+      $or: [
+        { eventId: findGuestCodeQuery.eventId },
+        { guestId: findGuestCodeQuery.guestId },
+        { codeId: findGuestCodeQuery.codeId },
+      ],
+    };
     return this.find(searchCriteria, {
       ...findGuestCodeQuery,
     });

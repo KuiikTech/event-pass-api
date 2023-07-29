@@ -12,7 +12,7 @@ export class Paginated<T> {
   }
 }
 
-export interface FilterToFindWithSearch {
+export interface FilterToFindWithSearchRegex {
   $or: Array<{
     [field: string]: { $regex: string; $options: string };
   }>;
@@ -25,11 +25,11 @@ export interface SearchFilters {
 export class FilterToFindFactory {
   static createFilterWithSearch(
     searchFilters: SearchFilters,
-  ): FilterToFindWithSearch {
+  ): FilterToFindWithSearchRegex {
     const orArray = Object.entries(searchFilters).map(
       ([fieldName, searchValue]) => ({
         [fieldName]: {
-          $regex: `.*${searchValue}.*`,
+          $regex: `${searchValue}`,
           $options: 'i',
         },
       }),

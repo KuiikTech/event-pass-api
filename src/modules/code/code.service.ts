@@ -5,7 +5,7 @@ import { PaginateModel } from 'mongoose';
 
 import {
   FilterToFindFactory,
-  FilterToFindWithSearch,
+  FilterToFindWithSearchRegex,
   Paginated,
   SearchFilters,
 } from 'src/libs/ports/repository.port';
@@ -97,7 +97,7 @@ export class CodeService {
   }
 
   async find(
-    filters: SearchFilters | FilterToFindWithSearch,
+    filters: SearchFilters | FilterToFindWithSearchRegex,
     paginatedQueryBase: PaginatedQueryBase,
   ) {
     const result = await this.codeModel.paginate(
@@ -144,7 +144,7 @@ export class CodeService {
   }
 
   async search(findCodeQuery: FindCodeQuery) {
-    const searchCriteria: FilterToFindWithSearch =
+    const searchCriteria: FilterToFindWithSearchRegex =
       FilterToFindFactory.createFilterWithSearch({
         uuid: `.*${findCodeQuery.uuid}.*`,
         type: `.*${findCodeQuery.type}.*`,
