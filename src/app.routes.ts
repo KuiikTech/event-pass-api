@@ -68,5 +68,6 @@ export const routesV1 = {
     searchById: `${guestCodeRoot}/:id`,
     update: `${guestCodeRoot}/:id`,
     updateByUuid: `${guestCodeRoot}/uuid/:uuid`,
+    checkinByUuid: `${guestCodeRoot}/checkin/:uuid`,
   },
 };

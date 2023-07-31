@@ -137,6 +137,32 @@ export class GuestCodeService {
     return this.sanitize(updatedGuestCode);
   }
 
+  async checkinByUuid(uuid: string) {
+    const code = await this.codeService.findOne({ uuid });
+    if (!code) {
+      throw new HttpException('Code does not exist', HttpStatus.NOT_FOUND);
+    }
+
+    const guestCode = await this.guestCodeModel.findOne({ codeId: code.id });
+    if (!guestCode) {
+      throw new HttpException(
+        'Guest code does not exist',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    guestCode.set({
+      count: guestCode.count + 1,
+    });
+
+    const updatedGuestCode = await this.guestCodeModel.findByIdAndUpdate(
+      guestCode.id,
+      guestCode,
+      { new: true },
+    );
+    return this.sanitize(updatedGuestCode);
+  }
+
   async find(
     filters: SearchFilters | FilterToFindWithSearchRegex,
     paginatedQueryBase: PaginatedQueryBase,
