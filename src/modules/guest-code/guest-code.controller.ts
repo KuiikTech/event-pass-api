@@ -69,6 +69,17 @@ export class GuestCodeController {
   }
 
   @ApiOperation({
+    summary: 'Checkin a guest by the uuid of the code',
+  })
+  @ApiBadRequestResponse({ type: ErrorResponse })
+  @Patch(routesV1.guestCode.checkinByUuid)
+  async checkinByUuid(
+    @Param('uuid') uuid: string,
+  ): Promise<ResponseGuestCodeDto> {
+    return this.guestCodeService.checkinByUuid(uuid);
+  }
+
+  @ApiOperation({
     summary:
       'List the codes registered to events with an exact search in fields',
   })
