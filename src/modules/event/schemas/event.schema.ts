@@ -24,8 +24,8 @@ export class EventModel extends Document {
   @Prop({
     required: true,
     validate: {
-      validator: (date) => date.getTime() > Date.now(),
-      message: 'Initial date must be in the future.',
+      validator: (date: Date) => date.getDate() >= new Date().getDate(),
+      message: 'Initial date must be equal or greater than current date.',
     },
   })
   initialDate: Date;
@@ -33,10 +33,10 @@ export class EventModel extends Document {
   @Prop({
     required: true,
     validate: {
-      validator: function (date) {
-        return date.getTime() > this.initialDate.getTime();
+      validator: function (date: Date) {
+        return date.getDate() >= this.initialDate.getDate();
       },
-      message: 'Final date must be later than initial date.',
+      message: 'Final date must be equal or greater than initial date.',
     },
   })
   finalDate: Date;
