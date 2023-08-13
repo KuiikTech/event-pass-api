@@ -4,9 +4,6 @@ on:
   pull_request:
     types:
       - closed
-  push:
-    branches:
-      - master
 
 env:
   APP_DEPLOY_PATH: /home/bitnami/apps/event-pass-api
