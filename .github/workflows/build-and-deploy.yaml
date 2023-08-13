@@ -1,0 +1,84 @@
+name: 🚀 Build and Deploy
+
+on:
+  pull_request:
+    types:
+      - closed
+  push:
+    branches:
+      - master
+
+env:
+  APP_DEPLOY_PATH: /home/bitnami/apps/event-pass-api
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 🛒 Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: 📦 Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 18
+
+    - name: 🧶 Install Yarn
+      run: npm install -g yarn
+
+    - name: 📥 Install Dependencies
+      run: yarn
+
+    - name: 🏗️ Build Application
+      run: yarn build
+
+    - name: 🚧 Replace Tokens
+      uses: cschleiden/replace-tokens@v1
+      with:
+        files: '["ecosystem.config.js"]'
+      env:
+        NODE_ENV: ${{ vars.NODE_ENV }}
+        npm_package_version: ${{ vars.npm_package_version }}
+        HOST: ${{ vars.HOST }}
+        PORT: ${{ vars.PORT }}
+        API_NAME: ${{ vars.API_NAME }}
+        API_DESCRIPTION: ${{ vars.API_DESCRIPTION }}
+        API_PREFIX: ${{ vars.API_PREFIX }}
+        JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        JWT_EXPIRATION_TIME: ${{ vars.JWT_EXPIRATION_TIME }}
+        MONGO_URI: ${{ secrets.MONGO_URI }}
+
+    - name: 📦 Package App
+      run: ./scripts/create-zip.sh
+
+    - name: 🚚 Transfer App to Lightsail
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: ./app-dist.zip
+        remote: ${{ env.APP_DEPLOY_PATH }}/app-dist.zip
+        host: ${{ secrets.SSH_IP }}
+        username: ${{ secrets.SSH_USER }}
+        privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
+
+    - name: 📂 Unzip App
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SSH_IP }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY}}
+        script: |
+          unzip -o ${{ env.APP_DEPLOY_PATH }}/app-dist.zip -d /${{ env.APP_DEPLOY_PATH }}/
+          ls -l
+
+    - name: 🚀 Deploy App
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SSH_IP }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY}}
+        script: |
+          cd ${{ env.APP_DEPLOY_PATH }}/dist
+          pm2 stop ./ecosystem.config.js
+          yarn
+          pm2 start ./ecosystem.config.js
