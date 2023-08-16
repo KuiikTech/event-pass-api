@@ -6,6 +6,7 @@ const guestRoot = 'guest';
 const eventRoot = 'event';
 const codeRoot = 'code';
 const guestCodeRoot = 'guest-code';
+const metricsRoot = 'metrics';
 
 // Api versions
 const v1 = 'v1';
@@ -69,5 +70,9 @@ export const routesV1 = {
     update: `${guestCodeRoot}/:id`,
     updateByUuid: `${guestCodeRoot}/uuid/:uuid`,
     checkinByUuid: `${guestCodeRoot}/checkin/:uuid`,
+  },
+  metrics: {
+    root: metricsRoot,
+    eventMetrics: `${metricsRoot}/event`,
   },
 };

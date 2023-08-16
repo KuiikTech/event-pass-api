@@ -13,6 +13,7 @@ import {
 import { EventModel, EVENT_MODEL_NAME } from './schemas/event.schema';
 import { CreateEventDto } from './dto/create-event.dto';
 import { EventStatusType } from './types/event-status.type';
+import { EventCounts } from './types/event-service.type';
 
 export class FindEventQuery extends PaginatedQueryBase {
   readonly name?: string;
@@ -145,6 +146,57 @@ export class EventService {
       new: true,
     });
     return this.sanitize(updatedEvent);
+  }
+
+  async getEventCounts(): Promise<EventCounts> {
+    const currentDate = new Date();
+
+    const upcomingCount = await this.eventModel.countDocuments({
+      status: EventStatusType.ACTIVE,
+      initialDate: { $gt: currentDate },
+    });
+
+    const ongoingCount = await this.eventModel.countDocuments({
+      status: EventStatusType.ACTIVE,
+      initialDate: { $lte: currentDate },
+      finalDate: { $gte: currentDate },
+    });
+
+    const completedCount = await this.eventModel.countDocuments({
+      status: EventStatusType.ACTIVE,
+      finalDate: { $lt: currentDate },
+    });
+
+    return {
+      upcomingCount,
+      ongoingCount,
+      completedCount,
+    };
+  }
+
+  async getEventMetricsByCity(): Promise<{ [city: string]: number }> {
+    const cityMetrics = await this.eventModel.aggregate([
+      {
+        $group: {
+          _id: '$city',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          city: '$_id',
+          count: 1,
+        },
+      },
+    ]);
+
+    const cityMetricsMap = {};
+    cityMetrics.forEach((metric) => {
+      cityMetricsMap[metric.city] = metric.count;
+    });
+
+    return cityMetricsMap;
   }
 
   async delete(id: string) {
