@@ -27,6 +27,7 @@ import { GuestModule } from './modules/guest/guest.module';
 import { EventModule } from './modules/event/event.module';
 import { CodeModule } from './modules/code/code.module';
 import { GuestCodeModule } from './modules/guest-code/guest-code.module';
+import { MetricModule } from './modules/metric/metric.module';
 import { GlobalVirtualFields } from './libs/ports/global-virtuals-fields.plugin';
 
 import 'reflect-metadata';
@@ -57,6 +58,7 @@ import 'reflect-metadata';
     EventModule,
     CodeModule,
     GuestCodeModule,
+    MetricModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy, AuthService],
